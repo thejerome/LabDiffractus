@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 import static vlab.server_java.model.util.Util.shrink;
@@ -26,78 +27,97 @@ import static vlab.server_java.model.util.Util.shrink;
 
  */
 public class ToolState {
-    private final BigDecimal light_slits_distance;
-    private final BigDecimal light_screen_distance;
-    private final BigDecimal light_width;
-    private final BigDecimal light_length;
-    private final BigDecimal between_slits_width;
-    private final boolean left_slit_closed;
-    private final boolean right_slit_closed;
+    private final BigDecimal l;
+    private final BigDecimal Nx;
+    private final BigDecimal Ny;
+    private final BigDecimal n;
+    private final BigDecimal H;
+    private final BigDecimal dx;
+    private final BigDecimal dy;
+    private final BigDecimal lambda_x;
+    private final BigDecimal lambda_y;
 
     @JsonCreator
     public ToolState(
-            @JsonProperty("light_slits_distance") BigDecimal light_slits_distance,
-            @JsonProperty("light_screen_distance") BigDecimal light_screen_distance,
-            @JsonProperty("light_width") BigDecimal light_width,
-            @JsonProperty("light_length") BigDecimal light_length,
-            @JsonProperty("between_slits_width") BigDecimal between_slits_width,
-            @JsonProperty("left_slit_closed") boolean left_slit_closed,
-            @JsonProperty("right_slit_closed") boolean right_slit_closed) {
+            @JsonProperty("l") BigDecimal l,
+            @JsonProperty("Nx") BigDecimal nx,
+            @JsonProperty("Ny") BigDecimal ny,
+            @JsonProperty("n") BigDecimal n,
+            @JsonProperty("H") BigDecimal h,
+            @JsonProperty("dx") BigDecimal dx,
+            @JsonProperty("dy") BigDecimal dy,
+            @JsonProperty("lambda_x") BigDecimal lambda_x,
+            @JsonProperty("lambda_y") BigDecimal lambda_y
+    ) {
 
-        Objects.requireNonNull(light_slits_distance);
-        Objects.requireNonNull(light_screen_distance);
-        Objects.requireNonNull(light_length);
-        Objects.requireNonNull(light_width);
-        Objects.requireNonNull(between_slits_width);
-        Objects.requireNonNull(left_slit_closed);
-        Objects.requireNonNull(right_slit_closed);
+        Objects.requireNonNull(l);
+        Objects.requireNonNull(nx);
+        Objects.requireNonNull(ny);
+        Objects.requireNonNull(n);
+        Objects.requireNonNull(h);
+        Objects.requireNonNull(dx);
+        Objects.requireNonNull(dy);
+        Objects.requireNonNull(lambda_x);
+        Objects.requireNonNull(lambda_y);
 
-        this.light_slits_distance = shrink(light_slits_distance);
-        this.light_screen_distance = shrink(light_screen_distance);
-        this.light_width = shrink(light_width);
-        this.light_length = shrink(light_length);
-        this.between_slits_width = shrink(between_slits_width);
-        this.left_slit_closed = left_slit_closed;
-        this.right_slit_closed = right_slit_closed;
+        this.l = shrink(l);
+        Nx = shrink(nx);
+        Ny = shrink(ny);
+        this.n = shrink(n);
+        H = shrink(h);
+        this.dx = shrink(dx);
+        this.dy = shrink(dy);
+        this.lambda_x = shrink(lambda_x);
+        this.lambda_y = shrink(lambda_y);
     }
 
     public ToolState(Variant variant) {
         this(
-                variant.getLight_slits_distance(),
-                variant.getLight_screen_distance(),
-                variant.getLight_width(),
-                variant.getLight_length(),
-                variant.getBetween_slits_width(),
-                variant.isLeft_slit_closed(),
-                variant.isRight_slit_closed()
+                variant.getL(),
+                variant.getNx(),
+                variant.getNy(),
+                variant.getN(),
+                variant.getH(),
+                variant.getDx(),
+                variant.getDy(),
+                variant.getLambda_x(),
+                variant.getLambda_y()
         );
     }
 
-    public BigDecimal getLight_slits_distance() {
-        return light_slits_distance;
+    public BigDecimal getL() {
+        return l;
     }
 
-    public BigDecimal getLight_screen_distance() {
-        return light_screen_distance;
+    public BigDecimal getNx() {
+        return Nx;
     }
 
-    public BigDecimal getLight_width() {
-        return light_width;
+    public BigDecimal getNy() {
+        return Ny;
     }
 
-    public BigDecimal getLight_length() {
-        return light_length;
+    public BigDecimal getN() {
+        return n;
     }
 
-    public BigDecimal getBetween_slits_width() {
-        return between_slits_width;
+    public BigDecimal getH() {
+        return H;
     }
 
-    public boolean isLeft_slit_closed() {
-        return left_slit_closed;
+    public BigDecimal getDx() {
+        return dx;
     }
 
-    public boolean isRight_slit_closed() {
-        return right_slit_closed;
+    public BigDecimal getDy() {
+        return dy;
+    }
+
+    public BigDecimal getLambda_x() {
+        return lambda_x;
+    }
+
+    public BigDecimal getLambda_y() {
+        return lambda_y;
     }
 }
