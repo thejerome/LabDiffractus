@@ -34,9 +34,9 @@ public class SimpleTaskGenerator implements GenerateProcessorImpl.TaskGenerator 
             try {
 
                 BigDecimal lambda = bd(500);//nm
-                BigDecimal l = bd(0.3);
-                BigDecimal Nx = bd(10);
-                BigDecimal Ny = bd(100);
+                BigDecimal l = bd(1.5);
+                BigDecimal Nx = bd(5);
+                BigDecimal Ny = bd(1);
                 BigDecimal n = bd(1.4);
                 BigDecimal lambda_x = bd(0.00001);//10 -6 -- 10 - 4
                 BigDecimal dx = bd(0.000001);
