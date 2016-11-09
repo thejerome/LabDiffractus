@@ -2,8 +2,7 @@ package vlab.server_java.generate;
 
 import rlcp.generate.GeneratingResult;
 import rlcp.server.processor.generate.GenerateProcessor;
-import vlab.server_java.generate.tasks.ExploreTaskGenerator;
-import vlab.server_java.generate.tasks.OscillationTaskGenerator;
+import vlab.server_java.generate.tasks.SimpleTaskGenerator;
 
 /**
  * Simple GenerateProcessor implementation. Supposed to be changed as needed to
@@ -16,10 +15,8 @@ public class GenerateProcessorImpl implements GenerateProcessor {
     public GeneratingResult generate(String condition) {
         try {
             System.out.println("condition = " + condition);
-            if (condition == null || condition.trim().isEmpty() || "explore".equals(condition.trim())) {
-                return new ExploreTaskGenerator().generate(condition);
-            } else if ("oscillation".equals(condition.trim())) {
-                return new OscillationTaskGenerator().generate(condition);
+            if (condition == null || condition.trim().isEmpty() || true) {
+                return new SimpleTaskGenerator().generate(condition);
             } else {
                 return new GeneratingResult("Ошибка варианта", " ", " ");
             }

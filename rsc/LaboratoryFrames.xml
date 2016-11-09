@@ -17,9 +17,9 @@
 				5. Проверьте правильность Ваших расчетов на компьютерном эксперименте.
 
 			</Data>
-			<LaboratoryTestsGroups LaboratoryTestsGroupsID="1" LimitOnCollection="1800" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14111" Weight="1" >
-				<LaboratoryTestsGroup LaboratoryTestsGroupID="1" Number="1" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14111" Weight="1" >
-					<LaboratoryTest TestID="1" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14111" Weight="1" >
+			<LaboratoryTestsGroups LaboratoryTestsGroupsID="1" LimitOnCollection="1800" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14112" Weight="1" >
+				<LaboratoryTestsGroup LaboratoryTestsGroupID="1" Number="1" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14112" Weight="1" >
+					<LaboratoryTest TestID="1" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14112" Weight="1" >
 						<LaboratoryTestInput>
 							<!-- explore -->
 						</LaboratoryTestInput>
@@ -73,9 +73,9 @@
 				Желаем успеха!
 
 			</Data>
-			<LaboratoryTestsGroups LaboratoryTestsGroupsID="1" LimitOnCollection="1800" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14111" Weight="1" >
-				<LaboratoryTestsGroup LaboratoryTestsGroupID="1" Number="1" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14111" Weight="1" >
-					<LaboratoryTest TestID="1" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14111" Weight="1" >
+			<LaboratoryTestsGroups LaboratoryTestsGroupsID="1" LimitOnCollection="1800" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14112" Weight="1" >
+				<LaboratoryTestsGroup LaboratoryTestsGroupID="1" Number="1" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14112" Weight="1" >
+					<LaboratoryTest TestID="1" LimitOnTest="1800" TimeScale="Second" URL="rlcp://dlc:dlc@127.0.0.1:14112" Weight="1" >
 						<LaboratoryTestInput>
 							<!-- oscillation -->
 						</LaboratoryTestInput>

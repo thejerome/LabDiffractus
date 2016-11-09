@@ -22,7 +22,7 @@ import static vlab.server_java.model.util.Util.bd;
 /**
  * Created by efimchick on 19.10.16.
  */
-public class ExploreTaskChecker implements CheckProcessorImpl.TaskChecker {
+public class SimpleTaskChecker implements CheckProcessorImpl.TaskChecker {
     @Override
     public CheckingSingleConditionResult check(ConditionForChecking condition, String instructions, GeneratingResult generatingResult) {
 
@@ -32,7 +32,7 @@ public class ExploreTaskChecker implements CheckProcessorImpl.TaskChecker {
             ToolState toolState = objectMapper.readValue(instructions, ToolState.class);
             Variant variant = objectMapper.readValue(generatingResult.getCode(), Variant.class);
             BigDecimal extraLambda = new BigDecimal(generatingResult.getInstructions());
-
+/*
             boolean isLambdaOk = toolState.getLight_length().compareTo(variant.getLight_length().add(extraLambda)) == 0;
             boolean isDOk = toolState.getLight_slits_distance().compareTo(variant.getLight_slits_distance()) == 0;
             boolean isAlphaOk = toolState.getLight_width().compareTo(variant.getLight_width()) == 0;
@@ -53,12 +53,12 @@ public class ExploreTaskChecker implements CheckProcessorImpl.TaskChecker {
 
             boolean isEqOk = eq0.subtract(eq1).setScale(6, ROUND_HALF_UP).compareTo(ZERO) == 0;
 
-
+*/
             BigDecimal points;
             String comment;
 
-            if(isLambdaOk && isDOk && isAlphaOk && isAOk && isSleetsOk){
-                if (isEqOk){
+            if(/*isLambdaOk && isDOk && isAlphaOk && isAOk && isSleetsOk*/ true){
+                if (true /*isEqOk*/){
                     points = ONE;
                     comment = "Верно!";
                 } else {

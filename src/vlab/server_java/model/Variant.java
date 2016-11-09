@@ -15,6 +15,7 @@ import static vlab.server_java.model.util.Util.shrink;
 public class Variant {
 
     private final BigDecimal l;
+    private final BigDecimal lambda;
     private final BigDecimal Nx;
     private final BigDecimal Ny;
     private final BigDecimal n;
@@ -30,6 +31,7 @@ public class Variant {
     @JsonCreator
     public Variant(
             @JsonProperty("l") BigDecimal l,
+            @JsonProperty("lambda") BigDecimal lambda,
             @JsonProperty("Nx") BigDecimal nx,
             @JsonProperty("Ny") BigDecimal ny,
             @JsonProperty("n") BigDecimal n,
@@ -44,6 +46,7 @@ public class Variant {
     ) {
 
         Objects.requireNonNull(l);
+        Objects.requireNonNull(lambda);
         Objects.requireNonNull(nx);
         Objects.requireNonNull(ny);
         Objects.requireNonNull(n);
@@ -57,6 +60,7 @@ public class Variant {
         Objects.requireNonNull(y_intensity);
 
         this.l = shrink(l);
+        this.lambda = shrink(lambda);
         Nx = shrink(nx);
         Ny = shrink(ny);
         this.n = shrink(n);
@@ -72,6 +76,10 @@ public class Variant {
 
     public BigDecimal getL() {
         return l;
+    }
+
+    public BigDecimal getLambda() {
+        return lambda;
     }
 
     public BigDecimal getNx() {

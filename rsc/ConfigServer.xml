@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE ConfigServer SYSTEM "rsc/ConfigServer.dtd">
 <ConfigServer>
-	<Name value ="LabChirzov"/>
-	<Port value="14111"/>
+	<Name value ="LabDiffraction"/>
+	<Port value="14112"/>
 	<UserInfo login="dlc" password="dlc"/>
 </ConfigServer>

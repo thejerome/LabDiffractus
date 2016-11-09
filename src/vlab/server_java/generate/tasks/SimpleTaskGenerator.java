@@ -12,12 +12,14 @@ import vlab.server_java.model.tool.ToolModel;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.ZERO;
 import static vlab.server_java.model.util.Util.*;
 
 /**
  * Created by efimchick on 17.10.16.
  */
-public class ExploreTaskGenerator implements GenerateProcessorImpl.TaskGenerator {
+public class SimpleTaskGenerator implements GenerateProcessorImpl.TaskGenerator {
 
         public GeneratingResult generate(String condition) {
             ObjectMapper mapper = new ObjectMapper();
@@ -27,6 +29,28 @@ public class ExploreTaskGenerator implements GenerateProcessorImpl.TaskGenerator
             String code = " ";
             String instructions = " ";
             try {
+
+                BigDecimal l = bd(0.6);
+                BigDecimal Nx = bd(1);
+                BigDecimal Ny = bd(1);
+                BigDecimal n = bd(1.4);
+                BigDecimal H = ZERO;
+                BigDecimal lambda_x = bd(0.00001);//10 -6 -- 10 - 4
+                BigDecimal dx = bd(0.000001);
+                BigDecimal lambda_y = bd(0.00001);//10 -6 -- 10 - 4
+                BigDecimal dy = bd(0.000001);
+                BigDecimal lambda = bd(500);//nm
+
+                PlotData plotData = ToolModel.buildPlot(new ToolState(l, lambda, Nx, Ny, n, H, dx, dy, lambda_x, lambda_y));
+
+                Variant variant = new Variant(l, lambda, Nx, Ny, n, H, dx, dy, lambda_x, lambda_y,
+                        plotData.getVisibility(), plotData.getX_intensity(), plotData.getY_intensity());
+
+                code = mapper.writeValueAsString(variant);
+
+
+
+                /*
 
                 BigDecimal light_slits_distance = bd("0.5");
                 BigDecimal light_screen_distance = bd("1.0");
@@ -84,6 +108,7 @@ public class ExploreTaskGenerator implements GenerateProcessorImpl.TaskGenerator
                 );
 
                 instructions = extra_light_length.toString();
+                */
 
             } catch (JsonProcessingException e) {
                 code = "Failed, " + e.getOriginalMessage();
@@ -91,5 +116,9 @@ public class ExploreTaskGenerator implements GenerateProcessorImpl.TaskGenerator
 
             return new GeneratingResult(text, escapeParam(code), escapeParam(instructions));
         }
+
+    public static void main(String[] args) {
+        System.out.println(new SimpleTaskGenerator().generate("").getCode());
+    }
 
 }

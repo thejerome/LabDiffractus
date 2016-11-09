@@ -13,21 +13,9 @@ import java.util.Objects;
 
 import static vlab.server_java.model.util.Util.shrink;
 
-/**
- *
- Для calculate запроса - {
- "light_slits_distance":50,
- "light_screen_distance":50,
- "light_width":50,
- "light_length":50,
- "left_slit_closed":false,
- "right_slit_closed":false,
- "between_slits_width":50}
-
-
- */
 public class ToolState {
     private final BigDecimal l;
+    private final BigDecimal lambda;
     private final BigDecimal Nx;
     private final BigDecimal Ny;
     private final BigDecimal n;
@@ -40,6 +28,7 @@ public class ToolState {
     @JsonCreator
     public ToolState(
             @JsonProperty("l") BigDecimal l,
+            @JsonProperty("lambda") BigDecimal lambda,
             @JsonProperty("Nx") BigDecimal nx,
             @JsonProperty("Ny") BigDecimal ny,
             @JsonProperty("n") BigDecimal n,
@@ -51,6 +40,7 @@ public class ToolState {
     ) {
 
         Objects.requireNonNull(l);
+        Objects.requireNonNull(lambda);
         Objects.requireNonNull(nx);
         Objects.requireNonNull(ny);
         Objects.requireNonNull(n);
@@ -61,6 +51,7 @@ public class ToolState {
         Objects.requireNonNull(lambda_y);
 
         this.l = shrink(l);
+        this.lambda = shrink(lambda);
         Nx = shrink(nx);
         Ny = shrink(ny);
         this.n = shrink(n);
@@ -74,6 +65,7 @@ public class ToolState {
     public ToolState(Variant variant) {
         this(
                 variant.getL(),
+                variant.getLambda(),
                 variant.getNx(),
                 variant.getNy(),
                 variant.getN(),
@@ -87,6 +79,10 @@ public class ToolState {
 
     public BigDecimal getL() {
         return l;
+    }
+
+    public BigDecimal getLambda() {
+        return lambda;
     }
 
     public BigDecimal getNx() {

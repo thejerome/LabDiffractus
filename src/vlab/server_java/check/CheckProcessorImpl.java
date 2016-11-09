@@ -1,21 +1,11 @@
 package vlab.server_java.check;
 
-import rlcp.check.CheckingResult;
 import rlcp.check.ConditionForChecking;
 import rlcp.generate.GeneratingResult;
-import rlcp.server.processor.check.CheckProcessor;
-import rlcp.server.processor.check.PreCheckProcessor;
 import rlcp.server.processor.check.PreCheckProcessor.PreCheckResult;
 import rlcp.server.processor.check.PreCheckResultAwareCheckProcessor;
-import vlab.server_java.check.tasks.ExploreTaskChecker;
-import vlab.server_java.check.tasks.OscillationTaskChecker;
-import vlab.server_java.generate.tasks.ExploreTaskGenerator;
-import vlab.server_java.generate.tasks.OscillationTaskGenerator;
-import vlab.server_java.model.util.Util;
+import vlab.server_java.check.tasks.SimpleTaskChecker;
 
-import java.math.BigDecimal;
-
-import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
 import static vlab.server_java.model.util.Util.prepareInputJsonString;
 
@@ -47,10 +37,8 @@ public class CheckProcessorImpl implements PreCheckResultAwareCheckProcessor<Str
 
             System.out.println("condition.getInput().trim() = " + condition.getInput().trim());
 
-            if (condition.getInput() == null || condition.getInput().trim().isEmpty() || "explore".equals(condition.getInput().trim())) {
-                return new ExploreTaskChecker().check(condition, instructions, generatingResult);
-            } else if ("oscillation".equals(condition.getInput().trim())) {
-                return new OscillationTaskChecker().check(condition, instructions, generatingResult);
+            if (condition.getInput() == null || condition.getInput().trim().isEmpty() || true) {
+                return new SimpleTaskChecker().check(condition, instructions, generatingResult);
             } else {
                 return new CheckingSingleConditionResult(ZERO, "Ошибка варианта");
             }
