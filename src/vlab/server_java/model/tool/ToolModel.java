@@ -94,6 +94,7 @@ public class ToolModel {
     private static BigDecimal getRefinedDataStep(BigDecimal dataStep, BigDecimal secondaryPeriod) {
         BigDecimal stepsPerPeriod = secondaryPeriod.divide(dataStep, HALF_UP);
 
+        System.out.println("stepsPerPeriod = " + stepsPerPeriod);
         //handling small stepsPerPeriod case
         if (stepsPerPeriod.doubleValue() < 20) {
             if (stepsPerPeriod.doubleValue() >= 3) {
@@ -155,10 +156,10 @@ public class ToolModel {
                         bd(sin(x_toSin_lx.doubleValue())).pow(2), HALF_UP
                 );
             } catch (ArithmeticException e) {
-                xIright = ONE;
+                xIright = nx.pow(2);
             }
 
-            return xIleft.multiply(xIright);
+            return xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP);
         };
 
 
