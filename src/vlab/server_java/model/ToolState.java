@@ -85,10 +85,12 @@ public class ToolState {
         return lambda;
     }
 
+    @JsonProperty("Nx")
     public BigDecimal getNx() {
         return Nx;
     }
 
+    @JsonProperty("Ny")
     public BigDecimal getNy() {
         return Ny;
     }
@@ -97,6 +99,7 @@ public class ToolState {
         return n;
     }
 
+    @JsonProperty("H")
     public BigDecimal getH() {
         return H;
     }

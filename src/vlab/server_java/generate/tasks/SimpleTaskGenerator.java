@@ -10,10 +10,13 @@ import vlab.server_java.model.Variant;
 import vlab.server_java.model.tool.ToolModel;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.TEN;
 import static java.math.BigDecimal.ZERO;
+import static java.math.RoundingMode.HALF_UP;
 import static vlab.server_java.model.util.Util.*;
 
 /**
@@ -30,16 +33,19 @@ public class SimpleTaskGenerator implements GenerateProcessorImpl.TaskGenerator 
             String instructions = " ";
             try {
 
-                BigDecimal l = bd(0.6);
-                BigDecimal Nx = bd(1);
-                BigDecimal Ny = bd(1);
+                BigDecimal lambda = bd(500);//nm
+                BigDecimal l = bd(0.3);
+                BigDecimal Nx = bd(10);
+                BigDecimal Ny = bd(100);
                 BigDecimal n = bd(1.4);
-                BigDecimal H = ZERO;
                 BigDecimal lambda_x = bd(0.00001);//10 -6 -- 10 - 4
                 BigDecimal dx = bd(0.000001);
                 BigDecimal lambda_y = bd(0.00001);//10 -6 -- 10 - 4
                 BigDecimal dy = bd(0.000001);
-                BigDecimal lambda = bd(500);//nm
+
+
+                BigDecimal H = ZERO;
+
 
                 PlotData plotData = ToolModel.buildPlot(new ToolState(l, lambda, Nx, Ny, n, H, dx, dy, lambda_x, lambda_y));
 

@@ -82,10 +82,12 @@ public class Variant {
         return lambda;
     }
 
+    @JsonProperty("Nx")
     public BigDecimal getNx() {
         return Nx;
     }
 
+    @JsonProperty("Ny")
     public BigDecimal getNy() {
         return Ny;
     }
@@ -94,6 +96,7 @@ public class Variant {
         return n;
     }
 
+    @JsonProperty("H")
     public BigDecimal getH() {
         return H;
     }

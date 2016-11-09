@@ -36,7 +36,7 @@ public class ToolModel {
         BigDecimal dataStep = defaultXStep;
 
         BigDecimal lambda = state.getLambda().multiply(TEN_POW_MINUS_NINE);
-        BigDecimal h = state.getH();
+        BigDecimal h = state.getH().multiply(TEN_POW_MINUS_NINE);
         BigDecimal lambda_x = state.getLambda_x();
         BigDecimal lambda_y = state.getLambda_y();
         BigDecimal dx = state.getDx();
