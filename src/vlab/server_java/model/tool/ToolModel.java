@@ -12,10 +12,10 @@ import java.util.function.Function;
 
 import static java.lang.Math.*;
 import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.TEN;
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
 import static vlab.server_java.model.util.Util.bd;
-import static vlab.server_java.model.util.Util.main;
 
 /**
  * Created by efimchick on 04.07.16.
@@ -91,18 +91,18 @@ public class ToolModel {
         return plotData;
     }
 
-    private static BigDecimal getRefinedDataStep(BigDecimal dataStep, BigDecimal secondaryPeriod) {
-        BigDecimal stepsPerPeriod = secondaryPeriod.divide(dataStep, HALF_UP);
+    private static BigDecimal getRefinedDataStep(BigDecimal dataStep, BigDecimal period) {
+        BigDecimal stepsPerPeriod = period.divide(dataStep, HALF_UP);
 
         System.out.println("stepsPerPeriod = " + stepsPerPeriod);
         //handling small stepsPerPeriod case
         if (stepsPerPeriod.doubleValue() < 20) {
             if (stepsPerPeriod.doubleValue() >= 3) {
-                BigDecimal wholeXStepsPerPeriods = stepsPerPeriod.setScale(0, HALF_UP);
-                if (wholeXStepsPerPeriods.intValue() % 2 != 0) {
-                    wholeXStepsPerPeriods = wholeXStepsPerPeriods.add(ONE);
+                BigDecimal wholeStepsPerPeriods = stepsPerPeriod.setScale(0, HALF_UP);
+                if (wholeStepsPerPeriods.intValue() % 2 != 0) {
+                    wholeStepsPerPeriods = wholeStepsPerPeriods.add(ONE);
                 }
-                dataStep = secondaryPeriod.divide(wholeXStepsPerPeriods, HALF_UP);
+                dataStep = period.divide(wholeStepsPerPeriods, HALF_UP);
             } else {
                 return ZERO;//to reduced mode
             }
@@ -113,7 +113,7 @@ public class ToolModel {
     private static List<BigDecimal[]> getAllIntensity(BigDecimal dataStep, BigDecimal lambda, BigDecimal h, BigDecimal lambda_x, BigDecimal dx, BigDecimal n, BigDecimal nx, BigDecimal l) {
         if (dataStep.equals(ZERO)){
             System.out.println("Going to reduced Intensity mode");
-            return getReducedIntensity(getMainPeriod(lambda, lambda_x, l), lambda, h, lambda_x, dx, n, nx, l);
+            return getReducedIntensity(lambda, h, lambda_x, dx, n, nx, l);
         }
 
         List<BigDecimal[]> xIntensity = new ArrayList<>();
@@ -187,9 +187,11 @@ public class ToolModel {
         return xIntensity;
     }
 
-    private static List<BigDecimal[]> getReducedIntensity(BigDecimal dataStep, BigDecimal lambda, BigDecimal h, BigDecimal lambda_x, BigDecimal dx, BigDecimal n, BigDecimal nx, BigDecimal l) {
+    private static List<BigDecimal[]> getReducedIntensity(BigDecimal lambda, BigDecimal h, BigDecimal lambda_x, BigDecimal dx, BigDecimal n, BigDecimal nx, BigDecimal l) {
 
         List<BigDecimal[]> xIntensity = new ArrayList<>();
+        BigDecimal mainPeriod = getMainPeriod(lambda, lambda_x, l);
+        BigDecimal dataStep = getRefinedDataStep(defaultStep, mainPeriod);
 
         //Pi * dx / lambda
         BigDecimal pi_dx_lambda = bdPI.multiply(dx).divide(lambda, HALF_UP);
@@ -218,13 +220,17 @@ public class ToolModel {
             }
 
             //sin nx * ! ^ 2 / sin ! ^ 2
-            try {
+            if(x.remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep) < 0 ){
                 xIright = nx.pow(2);
-            } catch (ArithmeticException e) {
-                xIright = ONE;
+            } else if(
+                    x.remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0
+                    || x.add(dataStep).remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0) {
+                xIright = nx.pow(2).divide(TEN, HALF_UP);
+            } else {
+                xIright = ZERO;
             }
 
-            return xIleft.multiply(xIright);
+            return xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP);
         };
 
 
