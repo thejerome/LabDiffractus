@@ -446,12 +446,14 @@ function init_lab() {
         var plot = d3.select(picture_selector),
             WIDTH = width,
             HEIGHT = height,
-            max_intensity = d3.max(x_data, function (d, i) {
-                return d[1]*y_data[i][1];
-            }),
+            max_intensity = 0,
             data = [];
         for (var i=0; i < x_data.length; i++){
             for (var j = 0; j < y_data.length; j++) {
+                var intensity = x_data[i][1] * y_data[j][1];
+                if (intensity > max_intensity){
+                    max_intensity = intensity;
+                }
                 data.push([x_data[i][0], y_data[j][0], x_data[i][1] * y_data[j][1], i, j])
             }
         }
