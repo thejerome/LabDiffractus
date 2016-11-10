@@ -18,8 +18,7 @@ function init_lab() {
         default_plot_data = {
             x_intensity: [[0.01, 0.05], [0.02, 0.1]],
             y_intensity: [[0.01, 0.08], [0.02, 0.4]]
-        }
-        ,
+        },
         default_variant = {
             l: 1,
             lambda: 600,
@@ -48,14 +47,14 @@ function init_lab() {
             '<input class="light_length_value" type="number" min="' + bound_values.length_bounds[0] + '" max="' + bound_values.length_bounds[1] + '" step="1" /> нм</label>' +
             '<label for="control_distance"><span class="label_name"><i>L</i>:</span> <input class="control_distance" ' +
             'id="control_distance" type="range" min="' + bound_values.l_bounds[0] + '" max="' + bound_values.l_bounds[1] + '" step="0.01"/><input class="distance_value" type="number" min="' + bound_values.l_bounds[0] + '" max="' + bound_values.l_bounds[1] + '" step="0.01"/> м</label></div>' +
-            '<div class="workspace_x_source"><canvas class="x_source" width="250" height="150"></canvas>' +
+            '<div class="workspace_x_source"><span class="value_name dx"><i>d</i><sub><i>x</i></sub></span><span class="value_name lx">&Lambda;<sub><i>x</i></sub></span><canvas class="x_source" width="250" height="150"></canvas>' +
             '<label for="control_Nx"><span class="label_name"><i>N</i><sub><i>x</i></sub>:</span> <input class="control_Nx" id="control_Nx" type="range" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/><input class="Nx_value" type="number" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/></label>' +
             '<label for="control_dx"><span class="label_name"><i>d</i><sub><i>x</i></sub>:</span> <input class="control_dx" id="control_dx" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dx_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
             '<label for="control_lambda_x"><span class="label_name">&Lambda;<sub><i>x</i></sub>:</span> <input class="control_lambda_x" id="control_lambda_x" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_x_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
             '<label for="control_H"><span class="label_name"><i>H</i>:</span> <input class="control_H" id="control_H" type="range" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.01"/><input class="H_value" type="number" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.01"/> м</label>' +
             '<label for="control_n"><span class="label_name"><i>n</i>:</span> <input class="control_n" id="control_n" type="range" min="' + bound_values.n_bounds[0] + '" max="' + bound_values.n_bounds[1] + '" step="0.01"/><input class="n_value" type="number" min="' + bound_values.n_bounds[0] + '" max="' + bound_values.n_bounds[1] + '" step="0.01"/></label>' +
             '</div>' +
-            '<div class="workspace_y_source"><canvas class="y_source" width="250" height="150"></canvas>' +
+            '<div class="workspace_y_source"><span class="value_name dy"><i>d</i><sub><i>y</i></sub></span><span class="value_name ly">&Lambda;<sub><i>y</i></sub></span><canvas class="y_source" width="250" height="150"></canvas>' +
             '<label for="control_Ny"><span class="label_name"><i>N</i><sub><i>y</i></sub>:</span> <input class="control_Ny" id="control_Ny" type="range" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/><input class="Ny_value" type="number" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/></label>' +
             '<label for="control_dy"><span class="label_name"><i>d</i><sub><i>y</i></sub>:</span> <input class="control_dy" id="control_dy" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dy_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
             '<label for="control_lambda_y"><span class="label_name">&Lambda;<sub><i>y</i></sub>:</span> <input class="control_lambda_y" id="control_lambda_y" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_y_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
@@ -229,37 +228,72 @@ function init_lab() {
         ctx.fillStyle = '#eeeeee';
         ctx.strokeStyle = '#eeeeee';
         ctx.beginPath();
-        ctx.moveTo(part, canvas.height);
-        ctx.lineTo(part, 15);
-        ctx.lineTo(1.5 * part, 0);
-        ctx.lineTo(1.5 * part, 90);
+        ctx.moveTo(part, canvas.height - 30);
+        ctx.lineTo(part, 40);
+        ctx.lineTo(1.5 * part, 30);
+        ctx.lineTo(1.5 * part, 85);
         ctx.lineTo(2 * part, 75);
-        ctx.lineTo(2 * part, canvas.height);
-        ctx.lineTo(part, canvas.height);
+        ctx.lineTo(2 * part, canvas.height - 30);
+        ctx.lineTo(part, canvas.height - 30);
         ctx.closePath();
         ctx.fill();
         ctx.beginPath();
-        ctx.moveTo(4* part, canvas.height);
-        ctx.lineTo(4 * part, 15);
-        ctx.lineTo(4.5 * part, 0);
-        ctx.lineTo(4.5 * part, 90);
+        ctx.moveTo(4* part, canvas.height - 30);
+        ctx.lineTo(4 * part, 40);
+        ctx.lineTo(4.5 * part, 30);
+        ctx.lineTo(4.5 * part, 85);
         ctx.lineTo(5 * part, 75);
-        ctx.lineTo(5 * part, canvas.height);
-        ctx.lineTo(4 * part, canvas.height);
+        ctx.lineTo(5 * part, canvas.height - 30);
+        ctx.lineTo(4 * part, canvas.height - 30);
         ctx.closePath();
         ctx.fill();
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(0, 46);
-        ctx.lineTo(part, 16);
-        ctx.moveTo(2*part, 77);
-        ctx.lineTo(4*part, 16);
-        ctx.moveTo(5*part, 77);
-        ctx.lineTo(6*part, 46);
+        ctx.moveTo(0, 63);
+        ctx.lineTo(part, 41);
+        ctx.moveTo(2*part, 76);
+        ctx.lineTo(4*part, 41);
+        ctx.moveTo(5*part, 76);
+        ctx.lineTo(6*part, 56);
+        ctx.moveTo(0, canvas.height - 30);
+        ctx.lineTo(canvas.width, canvas.height - 30);
         ctx.stroke();
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.strokeStyle = '#000000';
+        ctx.moveTo(20, canvas.height - 15);
+        ctx.lineTo(canvas.width - 20, canvas.height - 15);
+        ctx.moveTo(canvas.width - 50, canvas.height - 25);
+        ctx.lineTo(canvas.width - 20, canvas.height - 15);
+        ctx.moveTo(canvas.width - 50, canvas.height - 5);
+        ctx.lineTo(canvas.width - 20, canvas.height - 15);
+        ctx.stroke();
+        ctx.font="20px Georgia";
+        ctx.fillStyle = '#000000';
+        ctx.fillText("x", canvas.width - 15, canvas.height - 5);
+        ctx.font="14px Georgia";
+        ctx.fillStyle = "#8b41be";
+        ctx.strokeStyle = "#8b41be";
+        ctx.beginPath();
+        ctx.moveTo(1.5 * part, 85);
+        ctx.lineTo(4.5 * part, 85);
+        ctx.stroke();
+        ctx.fillStyle = "#2d7637";
+        ctx.strokeStyle = "#2d7637";
+        ctx.beginPath();
+        ctx.moveTo(2 * part, canvas.height - 30);
+        ctx.lineTo(4 * part, canvas.height - 30);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.fillStyle = "#de4545";
+        ctx.strokeStyle = "#de4545";
+        ctx.moveTo(4.5 * part, 30);
+        ctx.lineTo(4.5 * part, 85);
+        ctx.stroke();
+        ctx.fillText("H", 4.5 * part + 5, 61);
     }
 
-    function draw_y_source(h, d, lambda) {
+    function draw_y_source(h) {
         var canvas = $(".y_source")[0];
         var ctx = canvas.getContext("2d");
         ctx.globalCompositeOperation = 'source-over';
@@ -300,6 +334,40 @@ function init_lab() {
             ctx.fillRect(canvas.width / 2 + part_width / 2, 4 * part_height, dent_width, part_height);
             ctx.strokeRect(canvas.width / 2 + part_width / 2, 4 * part_height, dent_width, part_height);
         }
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.strokeStyle = '#000000';
+        ctx.moveTo(80, canvas.height - 10);
+        ctx.lineTo(80, 10);
+        ctx.moveTo(70, 40);
+        ctx.lineTo(80, 10);
+        ctx.moveTo(90, 40);
+        ctx.lineTo(80, 10);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        ctx.font="20px Georgia";
+        ctx.fillStyle = '#000000';
+        ctx.fillText("y", 60, 17);
+        ctx.font="14px Georgia";
+        ctx.fillStyle = "#de4545";
+        ctx.strokeStyle = "#de4545";
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2 + part_width / 2, part_height);
+        ctx.lineTo(canvas.width / 2 + part_width / 2 + dent_width, part_height);
+        ctx.stroke();
+        ctx.fillText("H", canvas.width / 2 + part_width / 2 + dent_width / 2 - 5, part_height - 5);
+        ctx.fillStyle = "#8b41be";
+        ctx.strokeStyle = "#8b41be";
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2 - part_width / 2, part_height * 1.5);
+        ctx.lineTo(canvas.width / 2 - part_width / 2, part_height * 3.5);
+        ctx.stroke();
+        ctx.fillStyle = "#2d7637";
+        ctx.strokeStyle = "#2d7637";
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2 + part_width / 2, part_height * 2);
+        ctx.lineTo(canvas.width / 2 + part_width / 2, part_height * 3);
+        ctx.stroke();
     }
 
     function fill_range(id_range, id_input, value, max) {
@@ -493,7 +561,7 @@ function init_lab() {
         init_plot(variant.y_intensity, ".workspace_intensity_y_plot .intensity_plot_pattern svg", 1, 400, 200, 40, 30, 50, false, light_color_hex);
         init_diffraction_picture(variant.x_intensity, variant.y_intensity, ".screen_pattern svg", 240, 240, light_color_hex);
         draw_x_source();
-        draw_y_source($(".control_H").val());
+        draw_y_source(bound_values.H_bounds[1]);
         setTimeout(function(){parse_light_screen($(".control_distance").val(), bound_values.l_bounds)}, 100);
 
     }
@@ -517,7 +585,6 @@ function init_lab() {
 
     function change_H_range(){
         $(".H_value").val($(".control_H").val());
-        draw_y_source($(".control_H").val());
     }
 
     function change_dx_range(){
@@ -672,7 +739,6 @@ function init_lab() {
             $(".control_H").val(bound_values.H_bounds[0]);
             $(".H_value").val(bound_values.H_bounds[0]);
         }
-        draw_y_source($(".control_H").val());
     }
 
     function change_dx_value(){

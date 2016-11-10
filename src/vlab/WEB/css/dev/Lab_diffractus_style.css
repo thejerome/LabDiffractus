@@ -118,6 +118,39 @@
     border: 1px solid #3d4652;
 }
 
+.block_workspace .workspace_x_source,
+.block_workspace .workspace_y_source {
+    position: relative;
+}
+
+.block_workspace .value_name {
+    position: absolute;
+}
+
+.value_name.dx {
+    top: 110px;
+    left: 128px;
+    color: #2d7637;
+}
+
+.value_name.dy {
+    top: 76px;
+    left: 158px;
+    color: #2d7637;
+}
+
+.value_name.lx {
+    color: #8b41be;
+    top: 76px;
+    left: 128px;
+}
+
+.value_name.ly {
+    top: 76px;
+    color: #8b41be;
+    left: 118px;
+}
+
 .block_workspace .workspace_x_source label:last-child,
 .block_workspace .workspace_y_source label:last-child {
     margin-bottom: 10px;
