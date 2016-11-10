@@ -6,20 +6,23 @@ function init_lab() {
             lambda_bounds: [0.000001, 0.0001],
             n_bounds: [1, 1.6],
             N_bounds: [1, 2000000],
-            l_bounds: [0.1, 2]
-    },
+            l_bounds: [0.1, 2],
+            length_bounds: [380, 780]
+        },
         controls_blocked = false,
         help_active = false,
-        light_color = "#55aa76",
+        light_color_hex = "",
+        light_color_hex_default = "",
         laboratory_variant,
         data_plot_user = [],
         default_plot_data = {
             x_intensity: [[0.01, 0.05], [0.02, 0.1]],
             y_intensity: [[0.01, 0.08], [0.02, 0.4]]
-    }
-    ,
+        }
+        ,
         default_variant = {
             l: 1,
+            lambda: 600,
             Nx: 500,
             Ny: 1000,
             n: 1.4,
@@ -30,56 +33,136 @@ function init_lab() {
             lambda_y: 0.000008,
             x_intensity: [[0.01, 0.02], [0.02, 0.1], [0.03, 0.13], [0.04, 0.16]],
             y_intensity: [[0.01, 0.8], [0.02, 0.5], [0.03, 0.8], [0.04, 0.9]]
-    },
+        },
         window = '<div class="vlab_setting"><div class="block_title">' +
-        '<div class="vlab_name">Виртуальная лаборатория «Дифракция»' +
-        '</div><input class="btn_help btn" type="button" value="Справка"/></div>' +
-        '<div class="block_field"><div class="block_field_title">Обновление дифракционной картины</div><div class="waiting_loading">' +
-        '<img width="100%" height="100%" src="img/Lab_diffractus_hourglass.png" /></div>' +
-        '</div><div class="block_workspace"><div class="workspace_demonstration"><button class="btn btn_play" type="button">' +
-        '<img src="img/Lab_diffractus_play.png" /></button><canvas class="demonstration_light" width="640" height="97"></canvas>' +
-        '<div class="demonstration_part part_grating"></div>' +
-        '<div class="demonstration_part part_screen"></div><div class="demonstration_part part_base"></div>' +
-        '<label for="control_distance"><span class="label_name"><i>L</i>:</span> <input class="control_distance" ' +
-        'id="control_distance" type="range" min="' + bound_values.l_bounds[0] + '" max="' + bound_values.l_bounds[1] + '" step="0.1"/><input class="distance_value" type="number" min="' + bound_values.l_bounds[0] + '" max="' + bound_values.l_bounds[1] + '" step="0.1"/> м</label></div>' +
-        '<div class="workspace_x_source"><canvas class="x_source" width="250" height="150"></canvas>' +
-        '<label for="control_Nx"><span class="label_name"><i>N</i><sub><i>x</i></sub>:</span> <input class="control_Nx" id="control_Nx" type="range" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/><input class="Nx_value" type="number" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/></label>' +
-        '<label for="control_dx"><span class="label_name"><i>d</i><sub><i>x</i></sub>:</span> <input class="control_dx" id="control_dx" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dx_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
-        '<label for="control_lambda_x"><span class="label_name">&Lambda;<sub><i>x</i></sub>:</span> <input class="control_lambda_x" id="control_lambda_x" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_x_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
-        '<label for="control_H"><span class="label_name"><i>H</i>:</span> <input class="control_H" id="control_H" type="range" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.01"/><input class="H_value" type="number" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.01"/> м</label>' +
-        '<label for="control_n"><span class="label_name"><i>n</i>:</span> <input class="control_n" id="control_n" type="range" min="' + bound_values.n_bounds[0] + '" max="' + bound_values.n_bounds[1] + '" step="0.01"/><input class="n_value" type="number" min="' + bound_values.n_bounds[0] + '" max="' + bound_values.n_bounds[1] + '" step="0.01"/></label>' +
-        '</div>' +
-        '<div class="workspace_y_source"><canvas class="y_source" width="250" height="150"></canvas>' +
-        '<label for="control_Ny"><span class="label_name"><i>N</i><sub><i>y</i></sub>:</span> <input class="control_Ny" id="control_Ny" type="range" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/><input class="Ny_value" type="number" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/></label>' +
-        '<label for="control_dy"><span class="label_name"><i>d</i><sub><i>y</i></sub>:</span> <input class="control_dy" id="control_dy" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dy_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
-        '<label for="control_lambda_y"><span class="label_name">&Lambda;<sub><i>y</i></sub>:</span> <input class="control_lambda_y" id="control_lambda_y" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_y_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
-        '</div><div class="workspace_screen">' +
-        '<div class="screen_pattern plot_pattern screen_comparison_on screen_user_on"><svg width="240" height="240"></svg></div>' +
-        '<div class="screen_user plot_user screen_comparison_on screen_pattern_on"><svg width="240" height="240"></svg></div>' +
-        '<div class="screen_pattern_show plot_show not_active" on="screen_pattern" off="screen_pattern_on">Образец</div>' +
-        '<div class="screen_user_show plot_show" on="screen_user" off="screen_user_on">Результат</div>' +
-        '</div>' +
-        '<div class="workspace_intensity_x_plot"><div class="plot_title">График интенсивности <i>I</i>(<i>x</i>)</div>' +
-        '<div class="intensity_plot_pattern plot_pattern intensity_comparison_on intensity_plot_user_on"><svg width="350" height="150"></svg></div>' +
-        '<div class="intensity_plot_user plot_user intensity_comparison_on intensity_plot_pattern_on"><svg width="350" height="150"></svg></div>' +
-        '<div class="intensity_comparison plot_comparison intensity_plot_user_on intensity_plot_pattern_on"><svg width="350" height="150"></svg></div>' +
-        '<div class="intensity_plot_pattern_show plot_show not_active" on="intensity_plot_pattern" off="intensity_plot_pattern_on">Образец</div>' +
-        '<div class="intensity_plot_user_show plot_show" on="intensity_plot_user" off="intensity_plot_user_on">Результат</div>' +
-        '<div class="intensity_comparison_show plot_show" on="intensity_comparison" off="intensity_comparison_on">Сравнение</div>' +
-        '</div>' +
-        '<div class="workspace_intensity_y_plot"><div class="plot_title">График интенсивности <i>I</i>(<i>y</i>)</div>' +
-        '<div class="intensity_plot_pattern plot_pattern intensity_comparison_on intensity_plot_user_on"><svg width="350" height="150"></svg></div>' +
-        '<div class="intensity_plot_user plot_user intensity_comparison_on intensity_plot_pattern_on"><svg width="350" height="150"></svg></div>' +
-        '<div class="intensity_comparison plot_comparison intensity_plot_user_on intensity_plot_pattern_on"><svg width="350" height="150"></svg></div>' +
-        '<div class="intensity_plot_pattern_show plot_show not_active" on="intensity_plot_pattern" off="intensity_plot_pattern_on">Образец</div>' +
-        '<div class="intensity_plot_user_show plot_show" on="intensity_plot_user" off="intensity_plot_user_on">Результат</div>' +
-        '<div class="intensity_comparison_show plot_show" on="intensity_comparison" off="intensity_comparison_on">Сравнение</div>' +
-        '</div>' +
-        '</div><div class="block_help">' +
-        '<h1>Помощь по работе в виртуальной лаборатории</h1>' +
-        '<input class="btn not_active slide_back" type="button" value="Назад" />' +
-        '<input class="btn slide_next" type="button" value="Далее" />' +
-        '</div></div>';
+            '<div class="vlab_name">Виртуальная лаборатория «Дифракция»' +
+            '</div><input class="btn_help btn" type="button" value="Справка"/></div>' +
+            '<div class="block_field"><div class="block_field_title">Обновление дифракционной картины</div><div class="waiting_loading">' +
+            '<img width="100%" height="100%" src="img/Lab_diffractus_hourglass.png" /></div>' +
+            '</div><div class="block_workspace"><div class="workspace_demonstration"><button class="btn btn_play" type="button">' +
+            '<img src="img/Lab_diffractus_play.png" /></button><canvas class="demonstration_light" width="640" height="100"></canvas>' +
+            '<div class="demonstration_part part_grating"></div>' +
+            '<div class="demonstration_part part_screen"></div><div class="demonstration_part part_base"></div>' +
+            '<label for="control_light_length"><span class="label_name">&lambda;:</span> <input class="control_light_length" ' +
+            'id="control_light_length" type="range" min="' + bound_values.length_bounds[0] + '" max="' + bound_values.length_bounds[1] + '" step="1" />' +
+            '<input class="light_length_value" type="number" min="' + bound_values.length_bounds[0] + '" max="' + bound_values.length_bounds[1] + '" step="1" /> нм</label>' +
+            '<label for="control_distance"><span class="label_name"><i>L</i>:</span> <input class="control_distance" ' +
+            'id="control_distance" type="range" min="' + bound_values.l_bounds[0] + '" max="' + bound_values.l_bounds[1] + '" step="0.01"/><input class="distance_value" type="number" min="' + bound_values.l_bounds[0] + '" max="' + bound_values.l_bounds[1] + '" step="0.01"/> м</label></div>' +
+            '<div class="workspace_x_source"><canvas class="x_source" width="250" height="150"></canvas>' +
+            '<label for="control_Nx"><span class="label_name"><i>N</i><sub><i>x</i></sub>:</span> <input class="control_Nx" id="control_Nx" type="range" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/><input class="Nx_value" type="number" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/></label>' +
+            '<label for="control_dx"><span class="label_name"><i>d</i><sub><i>x</i></sub>:</span> <input class="control_dx" id="control_dx" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dx_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
+            '<label for="control_lambda_x"><span class="label_name">&Lambda;<sub><i>x</i></sub>:</span> <input class="control_lambda_x" id="control_lambda_x" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_x_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
+            '<label for="control_H"><span class="label_name"><i>H</i>:</span> <input class="control_H" id="control_H" type="range" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.01"/><input class="H_value" type="number" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.01"/> м</label>' +
+            '<label for="control_n"><span class="label_name"><i>n</i>:</span> <input class="control_n" id="control_n" type="range" min="' + bound_values.n_bounds[0] + '" max="' + bound_values.n_bounds[1] + '" step="0.01"/><input class="n_value" type="number" min="' + bound_values.n_bounds[0] + '" max="' + bound_values.n_bounds[1] + '" step="0.01"/></label>' +
+            '</div>' +
+            '<div class="workspace_y_source"><canvas class="y_source" width="250" height="150"></canvas>' +
+            '<label for="control_Ny"><span class="label_name"><i>N</i><sub><i>y</i></sub>:</span> <input class="control_Ny" id="control_Ny" type="range" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/><input class="Ny_value" type="number" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/></label>' +
+            '<label for="control_dy"><span class="label_name"><i>d</i><sub><i>y</i></sub>:</span> <input class="control_dy" id="control_dy" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dy_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
+            '<label for="control_lambda_y"><span class="label_name">&Lambda;<sub><i>y</i></sub>:</span> <input class="control_lambda_y" id="control_lambda_y" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_y_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
+            '</div><div class="workspace_screen">' +
+            '<div class="screen_pattern plot_pattern screen_comparison_on screen_user_on"><svg width="240" height="240"></svg></div>' +
+            '<div class="screen_user plot_user screen_comparison_on screen_pattern_on"><svg width="240" height="240"></svg></div>' +
+            '<div class="screen_pattern_show plot_show not_active" on="screen_pattern" off="screen_pattern_on">Образец</div>' +
+            '<div class="screen_user_show plot_show" on="screen_user" off="screen_user_on">Результат</div>' +
+            '</div>' +
+            '<div class="workspace_intensity_x_plot"><div class="plot_title">График интенсивности <i>I</i>(<i>x</i>)</div>' +
+            '<div class="intensity_plot_pattern plot_pattern intensity_comparison_on intensity_plot_user_on"><svg width="400" height="200"></svg></div>' +
+            '<div class="intensity_plot_user plot_user intensity_comparison_on intensity_plot_pattern_on"><svg width="400" height="200"></svg></div>' +
+            '<div class="intensity_comparison plot_comparison intensity_plot_user_on intensity_plot_pattern_on"><svg width="400" height="200"></svg></div>' +
+            '<div class="intensity_plot_pattern_show plot_show not_active" on="intensity_plot_pattern" off="intensity_plot_pattern_on">Образец</div>' +
+            '<div class="intensity_plot_user_show plot_show" on="intensity_plot_user" off="intensity_plot_user_on">Результат</div>' +
+            '<div class="intensity_comparison_show plot_show" on="intensity_comparison" off="intensity_comparison_on">Сравнение</div>' +
+            '</div>' +
+            '<div class="workspace_intensity_y_plot"><div class="plot_title">График интенсивности <i>I</i>(<i>y</i>)</div>' +
+            '<div class="intensity_plot_pattern plot_pattern intensity_comparison_on intensity_plot_user_on"><svg width="400" height="200"></svg></div>' +
+            '<div class="intensity_plot_user plot_user intensity_comparison_on intensity_plot_pattern_on"><svg width="400" height="200"></svg></div>' +
+            '<div class="intensity_comparison plot_comparison intensity_plot_user_on intensity_plot_pattern_on"><svg width="400" height="200"></svg></div>' +
+            '<div class="intensity_plot_pattern_show plot_show not_active" on="intensity_plot_pattern" off="intensity_plot_pattern_on">Образец</div>' +
+            '<div class="intensity_plot_user_show plot_show" on="intensity_plot_user" off="intensity_plot_user_on">Результат</div>' +
+            '<div class="intensity_comparison_show plot_show" on="intensity_comparison" off="intensity_comparison_on">Сравнение</div>' +
+            '</div>' +
+            '</div><div class="block_help">' +
+            '<h1>Помощь по работе в виртуальной лаборатории</h1>' +
+            '<input class="btn not_active slide_back" type="button" value="Назад" />' +
+            '<input class="btn slide_next" type="button" value="Далее" />' +
+            '</div></div>';
+
+    function parse_lightwave_length(length_in_nm) {
+        var color_rgb = wavelength_to_rgb(length_in_nm);
+        light_color_hex = rgb_to_hex(color_rgb);
+        var light_edge = $(".part_screen").position().left - $(".part_grating").position().left;
+        draw_light(light_color_hex, light_edge);
+    }
+
+    function wavelength_to_rgb(wavelength) {
+        var gamma = 0.80,
+            intensity_max = 255,
+            factor, red, green, blue;
+        if ((wavelength >= 380) && (wavelength < 440)) {
+            red = -(wavelength - 440) / (440 - 380);
+            green = 0.0;
+            blue = 1.0;
+        } else if ((wavelength >= 440) && (wavelength < 490)) {
+            red = 0.0;
+            green = (wavelength - 440) / (490 - 440);
+            blue = 1.0;
+        } else if ((wavelength >= 490) && (wavelength < 510)) {
+            red = 0.0;
+            green = 1.0;
+            blue = -(wavelength - 510) / (510 - 490);
+        } else if ((wavelength >= 510) && (wavelength < 580)) {
+            red = (wavelength - 510) / (580 - 510);
+            green = 1.0;
+            blue = 0.0;
+        } else if ((wavelength >= 580) && (wavelength < 645)) {
+            red = 1.0;
+            green = -(wavelength - 645) / (645 - 580);
+            blue = 0.0;
+        } else if ((wavelength >= 645) && (wavelength < 781)) {
+            red = 1.0;
+            green = 0.0;
+            blue = 0.0;
+        } else {
+            red = 0.0;
+            green = 0.0;
+            blue = 0.0;
+        }
+        if ((wavelength >= 380) && (wavelength < 420)) {
+            factor = 0.3 + 0.7 * (wavelength - 380) / (420 - 380);
+        } else if ((wavelength >= 420) && (wavelength < 701)) {
+            factor = 1.0;
+        } else if ((wavelength >= 701) && (wavelength < 781)) {
+            factor = 0.3 + 0.7 * (780 - wavelength) / (780 - 700);
+        } else {
+            factor = 0.0;
+        }
+        if (red !== 0) {
+            red = Math.round(intensity_max * Math.pow(red * factor, gamma));
+        }
+        if (green !== 0) {
+            green = Math.round(intensity_max * Math.pow(green * factor, gamma));
+        }
+        if (blue !== 0) {
+            blue = Math.round(intensity_max * Math.pow(blue * factor, gamma));
+        }
+        return [red, green, blue];
+    }
+
+    function decimal_to_hex(number) {
+        var hex = number.toString(16);
+        if (hex.length < 2) {
+            hex = "0" + hex;
+        }
+        return hex;
+    }
+
+    function rgb_to_hex(color) {
+        var hexString = '#';
+        for (var i = 0; i < 3; i++) {
+            hexString += decimal_to_hex(color[i]);
+        }
+        return hexString;
+    }
 
     function draw_light(color, edge) {
         var canvas = $(".demonstration_light")[0];
@@ -98,13 +181,13 @@ function init_lab() {
         ctx.fillStyle = color;
         ctx.globalAlpha = 0.6;
         ctx.beginPath();
-        ctx.moveTo(26, 24);
+        ctx.moveTo(33, 15);
         ctx.lineTo(130, 50);
-        ctx.lineTo(130 + edge, 50);
-        ctx.lineTo(130 + edge, -20);
-        ctx.lineTo(130, -20);
-        ctx.lineTo(26, 6);
-        ctx.closePath();
+        ctx.lineTo(210 , 50);
+        ctx.lineTo(210 + edge, 50);
+        ctx.lineTo(210 + edge, -20);
+        ctx.lineTo(130 , -20);
+        ctx.lineTo(33, 15);
         ctx.fill();
         ctx.restore();
         ctx.beginPath();
@@ -115,16 +198,29 @@ function init_lab() {
         ctx.closePath();
         ctx.fill();
         ctx.restore();
+        ctx.save();
+        ctx.fillStyle = "#C9E6FD";
+        ctx.strokeStyle = "#9DD1FB";
+        ctx.globalAlpha = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(150, canvas.height);
+        ctx.bezierCurveTo(140, canvas.height-30, 140, 40, 150, 10);
+        ctx.lineTo(155, 10);
+        ctx.lineTo(155, canvas.height);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
     }
 
     function parse_light_screen(width_in_m, range) {
         var width_in_percent = width_in_m / range[1];
-        $(".part_screen").css("left", 30 + width_in_percent * 50 + "%");
+        $(".part_screen").css("left", 40 + width_in_percent * 45 + "%");
         var light_edge = $(".part_screen").position().left - $(".part_grating").position().left;
-        draw_light(light_color, light_edge);
+        draw_light(light_color_hex, light_edge);
     }
 
-    function draw_x_source() {
+    function draw_x_source(h, d, lambda) {
         var canvas = $(".x_source")[0];
         var ctx = canvas.getContext("2d");
         ctx.globalCompositeOperation = 'source-over';
@@ -163,16 +259,47 @@ function init_lab() {
         ctx.stroke();
     }
 
-    function draw_y_source() {
+    function draw_y_source(h, d, lambda) {
         var canvas = $(".y_source")[0];
         var ctx = canvas.getContext("2d");
         ctx.globalCompositeOperation = 'source-over';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        var part = canvas.width / 6;
+        var part_height = canvas.height / 5;
+        var part_width = 40;
+        ctx.strokeStyle = "#eeeeee";
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(canvas.width / 2 - part_width / 2, 0, part_width, part_height);
+        ctx.strokeRect(canvas.width / 2 - part_width / 2, 0, part_width, part_height);
         ctx.fillStyle = '#eeeeee';
-        ctx.fillRect(part, 0, part, canvas.height);
-        ctx.translate(4 * part, 0);
-        ctx.fillRect(0, 0, part, canvas.height);
+        ctx.fillRect(canvas.width / 2 - part_width / 2, part_height, part_width, part_height);
+        ctx.strokeRect(canvas.width / 2 - part_width / 2, part_height, part_width, part_height);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(canvas.width / 2 - part_width / 2, 2 * part_height, part_width, part_height);
+        ctx.strokeRect(canvas.width / 2 - part_width / 2, 2 * part_height, part_width, part_height);
+        ctx.fillStyle = '#eeeeee';
+        ctx.fillRect(canvas.width / 2 - part_width / 2, 3 * part_height, part_width, part_height);
+        ctx.strokeRect(canvas.width / 2 - part_width / 2, 3 * part_height, part_width, part_height);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(canvas.width / 2 - part_width / 2, 4 * part_height, part_width, part_height);
+        ctx.strokeRect(canvas.width / 2 - part_width / 2, 4 * part_height, part_width, part_height);
+        if (h > 0){
+            var dent_width = (h / bound_values.H_bounds[1]) * 50;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(canvas.width / 2 + part_width / 2, 0, dent_width, part_height);
+            ctx.strokeRect(canvas.width / 2 + part_width / 2, 0, dent_width, part_height);
+            ctx.fillStyle = '#eeeeee';
+            ctx.fillRect(canvas.width / 2 + part_width / 2, part_height, dent_width, part_height);
+            ctx.strokeRect(canvas.width / 2 + part_width / 2, part_height, dent_width, part_height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(canvas.width / 2 + part_width / 2, 2 * part_height, dent_width, part_height);
+            ctx.strokeRect(canvas.width / 2 + part_width / 2, 2 * part_height, dent_width, part_height);
+            ctx.fillStyle = '#eeeeee';
+            ctx.fillRect(canvas.width / 2 + part_width / 2, 3 * part_height, dent_width, part_height);
+            ctx.strokeRect(canvas.width / 2 + part_width / 2, 3 * part_height, dent_width, part_height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(canvas.width / 2 + part_width / 2, 4 * part_height, dent_width, part_height);
+            ctx.strokeRect(canvas.width / 2 + part_width / 2, 4 * part_height, dent_width, part_height);
+        }
     }
 
     function fill_range(id_range, id_input, value, max) {
@@ -281,10 +408,19 @@ function init_lab() {
         plot.append("svg:g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
-            .call(x_axis);
+            .call(x_axis)
+            .each(function(d) {
+                d3.select(this)
+                    .selectAll("text")
+                    .attr("y", -2)
+                    .attr("x", 10)
+                    .attr("dy", ".35em")
+                    .attr("transform", "rotate(90)")
+                    .style("text-anchor", "start");
+            });
         plot.append("svg:path")
             .attr("d", line_func(data))
-            .attr("stroke", light_color)
+            .attr("stroke", light_color_hex)
             .attr("stroke-width", 2)
             .attr("fill", "none");
         var y_axis = d3.svg.axis()
@@ -299,7 +435,7 @@ function init_lab() {
         if (comparison_mode) {
             plot.append("svg:path")
                 .attr("d", line_func(comparison_data))
-                .attr("stroke", light_color)
+                .attr("stroke", light_color_hex_default)
                 .attr("stroke-width", 2)
                 .attr("fill", "none");
         }
@@ -338,6 +474,9 @@ function init_lab() {
     }
 
     function fill_setting(variant) {
+        var color_rgb = wavelength_to_rgb(variant.lambda);
+        light_color_hex = rgb_to_hex(color_rgb);
+        light_color_hex_default = light_color_hex;
         fill_range(".control_distance", ".distance_value", variant.l);
         fill_range(".control_Nx", ".Nx_value", variant.Nx);
         fill_range(".control_Ny", ".Ny_value", variant.Ny);
@@ -347,12 +486,13 @@ function init_lab() {
         fill_range(".control_lambda_y", ".lambda_y_value", variant.lambda_y);
         fill_range(".control_H", ".H_value", variant.H);
         fill_range(".control_n", ".n_value", variant.n);
-        init_plot(variant.x_intensity, ".workspace_intensity_x_plot .intensity_plot_pattern svg", 1, 350, 150, 40, 30, 20, false);
-        init_plot(variant.y_intensity, ".workspace_intensity_y_plot .intensity_plot_pattern svg", 1, 350, 150, 40, 30, 20, false);
-        init_diffraction_picture(variant.x_intensity, variant.y_intensity, ".screen_pattern svg", 240, 240, light_color);
+        fill_range(".control_light_length", ".light_length_value", variant.lambda);
+        init_plot(variant.x_intensity, ".workspace_intensity_x_plot .intensity_plot_pattern svg", 1, 400, 200, 40, 30, 50, false, light_color_hex);
+        init_plot(variant.y_intensity, ".workspace_intensity_y_plot .intensity_plot_pattern svg", 1, 400, 200, 40, 30, 50, false, light_color_hex);
+        init_diffraction_picture(variant.x_intensity, variant.y_intensity, ".screen_pattern svg", 240, 240, light_color_hex);
         draw_x_source();
-        draw_y_source();
-        setTimeout(function(){parse_light_screen($(".control_distance").val(), bound_values.l_bounds)}, 1);
+        draw_y_source($(".control_H").val());
+        setTimeout(function(){parse_light_screen($(".control_distance").val(), bound_values.l_bounds)}, 100);
 
     }
 
@@ -375,6 +515,7 @@ function init_lab() {
 
     function change_H_range(){
         $(".H_value").val($(".control_H").val());
+        draw_y_source($(".control_H").val());
     }
 
     function change_dx_range(){
@@ -529,6 +670,7 @@ function init_lab() {
             $(".control_H").val(bound_values.H_bounds[0]);
             $(".H_value").val(bound_values.H_bounds[0]);
         }
+        draw_y_source($(".control_H").val());
     }
 
     function change_dx_value(){
@@ -625,6 +767,35 @@ function init_lab() {
         change_dy();
     }
 
+    function change_length_value(){
+        if ($.isNumeric($(".light_length_value").val())) {
+            if (($(".light_length_value").val() <= bound_values.length_bounds[1]) &
+                ($(".light_length_value").val() >= bound_values.length_bounds[0])) {
+                $(".control_light_length").val($(".light_length_value").val());
+                $(".light_length_value").val($(".control_light_length").val());
+            } else {
+                if ($(".light_length_value").val() > bound_values.length_bounds[1]) {
+                    $(".control_light_length").val(bound_values.length_bounds[1]);
+                    $(".light_length_value").val(bound_values.length_bounds[1]);
+                } else {
+                    if ($(".light_length_value").val() < bound_values.length_bounds[0]) {
+                        $(".control_light_length").val(bound_values.length_bounds[0]);
+                        $(".light_length_value").val(bound_values.length_bounds[0]);
+                    }
+                }
+            }
+        } else {
+            $(".control_light_length").val(bound_values.length_bounds[0]);
+            $(".light_length_value").val(bound_values.length_bounds[0]);
+        }
+        parse_lightwave_length($(".control_light_length").val());
+    }
+
+    function change_length_range(){
+        $(".light_length_value").val($(".control_light_length").val());
+        parse_lightwave_length($(".control_light_length").val());
+    }
+
     function draw_previous_solution(previous_solution){
         $(".control_distance").val(previous_solution.l);
         change_distance_range();
@@ -644,6 +815,8 @@ function init_lab() {
         change_lambda_x_range();
         $(".control_lambda_y").val(previous_solution.lambda_y);
         change_lambda_y_range();
+        $(".control_light_length").val(previous_solution.lambda);
+        change_length_range();
     }
 
     return {
@@ -708,6 +881,16 @@ function init_lab() {
                     if (help_slide_number === 0) {
                         $(this).addClass("not_active")
                     }
+                }
+            });
+            $(".control_light_length").on("change mousemove", function () {
+                if (!controls_blocked) {
+                    change_length_range();
+                }
+            });
+            $(".light_length_value").change(function () {
+                if (!controls_blocked) {
+                    change_length_value();
                 }
             });
             $(".control_distance").on("change mousemove", function () {
@@ -803,11 +986,11 @@ function init_lab() {
         },
         calculateHandler: function () {
             data_plot_user = parse_result(arguments[0], default_plot_data);
-            init_plot(data_plot_user.x_intensity, ".workspace_intensity_x_plot .intensity_plot_user svg", 1, 350, 150, 40, 30, 20, false);
-            init_plot(data_plot_user.x_intensity, ".workspace_intensity_x_plot .intensity_comparison svg", 1, 350, 150, 40, 30, 20, true, laboratory_variant.x_intensity);
-            init_plot(data_plot_user.y_intensity, ".workspace_intensity_y_plot .intensity_plot_user svg", 1, 350, 150, 40, 30, 20, false);
-            init_plot(data_plot_user.y_intensity, ".workspace_intensity_y_plot .intensity_comparison svg", 1, 350, 150, 40, 30, 20, true, laboratory_variant.y_intensity);
-            init_diffraction_picture(data_plot_user.x_intensity, data_plot_user.y_intensity, ".screen_user svg", 240, 240, light_color);
+            init_plot(data_plot_user.x_intensity, ".workspace_intensity_x_plot .intensity_plot_user svg", 1, 400, 200, 40, 30, 50, false);
+            init_plot(data_plot_user.x_intensity, ".workspace_intensity_x_plot .intensity_comparison svg", 1, 400, 200, 40, 30, 50, true, laboratory_variant.x_intensity);
+            init_plot(data_plot_user.y_intensity, ".workspace_intensity_y_plot .intensity_plot_user svg", 1, 400, 200, 40, 30, 50, false);
+            init_plot(data_plot_user.y_intensity, ".workspace_intensity_y_plot .intensity_comparison svg", 1, 400, 200, 40, 30, 50, true, laboratory_variant.y_intensity);
+            init_diffraction_picture(data_plot_user.x_intensity, data_plot_user.y_intensity, ".screen_user svg", 240, 240, light_color_hex);
             $(".plot_pattern").css("display", "none");
             $(".plot_comparison").css("display", "none");
             $(".plot_user").css("display", "block");
@@ -825,9 +1008,10 @@ function init_lab() {
             answer.n = parseFloat($(".control_n").val());
             answer.H = parseFloat($(".control_H").val());
             answer.dx = parseFloat($(".control_dx").val());
-            answer.dy= parseFloat($(".control_dy").val());
-            answer.lambda_x= parseFloat($(".control_lambda_x").val());
-            answer.lambda_y= parseFloat($(".control_lambda_y").val());
+            answer.dy = parseFloat($(".control_dy").val());
+            answer.lambda_x = parseFloat($(".control_lambda_x").val());
+            answer.lambda_y = parseFloat($(".control_lambda_y").val());
+            answer.lambda = parseFloat($(".control_light_length").val());
             answer = JSON.stringify(answer);
             return answer;
         },

@@ -1,6 +1,6 @@
 .vlab_setting {
     width: 800px;
-    height: 800px;
+    height: 900px;
     border: 2px solid #3d4652;
     margin: 10px;
     border-radius: 5px;
@@ -42,7 +42,7 @@
     justify-content: space-around;
     align-items: center;
     overflow: auto;
-    height: 740px;
+    height: 840px;
 }
 
 .block_workspace > div {
@@ -56,11 +56,11 @@
     width: 100%;
     border-bottom: 1px solid #3d4652;
     border-top: 1px solid #3d4652;
-    height: 25%;
+    height: 22%;
     position: relative;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
     align-items: flex-end;
 }
 
@@ -71,28 +71,28 @@
 .workspace_demonstration .demonstration_part {
     position: absolute;
     width: 4px;
-    height: 55%;
-    top: 10%;
+    height: 50%;
+    top: 19%;
     z-index: 2;
     background-color: #b8b9bc;
 }
 
 .workspace_demonstration .part_screen {
     background-color: #000000;
+    z-index: 1;
 }
 
 .workspace_demonstration .part_grating {
     position: absolute;
-    left: 28%;
-    top: 10%;
+    left: 38%;
     z-index: 1;
 }
 
 .demonstration_part.part_base {
     width: 80%;
-    height: 10%;
+    height: 5%;
     background-color: #eea236;
-    top: 65%;
+    top: 68%;
     left: 10%;
     z-index: 1;
 }
@@ -159,7 +159,8 @@
 
 .workspace_x_source label input[type=range],
 .workspace_y_source label input[type=range],
-.workspace_demonstration label input.control_distance {
+.workspace_demonstration label input.control_distance,
+.workspace_demonstration label input.control_light_length {
     width: 45%;
     vertical-align: middle;
 }
@@ -191,7 +192,7 @@
 .block_workspace .workspace_intensity_x_plot, .block_workspace .workspace_intensity_y_plot {
     width: 50%;
     border-top: 1px solid #3d4652;
-    height: 30%;
+    height: 33%;
 }
 
 .block_help {
@@ -203,7 +204,7 @@
     position: absolute;
     top: 60px;
     left: 0;
-    height: 740px;
+    height: 840px;
     border-top: 1px solid #3d4652;
     background-color: #ffffff;
     padding: 15px;
@@ -339,6 +340,7 @@
     align-items: center;
     flex-wrap: wrap;
     align-content: space-around;
+    height: 33%;
 }
 
 .axis path,
@@ -431,7 +433,7 @@
 
 .block_field.active_waiting {
     width: 100%;
-    height: 740px;
+    height: 840px;
     position: absolute;
     top: 60px;
     left: 0;
