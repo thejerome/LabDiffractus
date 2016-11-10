@@ -8,12 +8,11 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.lang.Math.*;
-import static java.math.BigDecimal.ONE;
-import static java.math.BigDecimal.TEN;
-import static java.math.BigDecimal.ZERO;
+import static java.math.BigDecimal.*;
 import static java.math.RoundingMode.HALF_UP;
 import static vlab.server_java.model.util.Util.bd;
 
@@ -39,7 +38,6 @@ public class ToolModel {
     }
 
     public static PlotData buildPlot(ToolState state) {
-
 
 
         BigDecimal lambda = state.getLambda().multiply(TEN_POW_MINUS_NINE);
@@ -73,7 +71,6 @@ public class ToolModel {
         System.out.println("y_secondaryPeriod = " + y_secondaryPeriod);
 
 
-
         dataStepX = getRefinedDataStep(dataStepX, x_secondaryPeriod);
         dataStepY = getRefinedDataStep(dataStepY, y_secondaryPeriod);
 
@@ -83,8 +80,6 @@ public class ToolModel {
 
         List<BigDecimal[]> xIntensity = getAllIntensity(dataStepX, lambda, h, lambda_x, dx, n, nx, l);
         List<BigDecimal[]> yIntensity = getAllIntensity(dataStepY, lambda, ZERO, lambda_y, dy, n, ny, l);
-
-
 
         PlotData plotData = new PlotData(xIntensity, yIntensity, ONE);
 
@@ -111,7 +106,7 @@ public class ToolModel {
     }
 
     private static List<BigDecimal[]> getAllIntensity(BigDecimal dataStep, BigDecimal lambda, BigDecimal h, BigDecimal lambda_x, BigDecimal dx, BigDecimal n, BigDecimal nx, BigDecimal l) {
-        if (dataStep.equals(ZERO)){
+        if (dataStep.equals(ZERO)) {
             System.out.println("Going to reduced Intensity mode");
             return getReducedIntensity(lambda, h, lambda_x, dx, n, nx, l);
         }
@@ -189,9 +184,15 @@ public class ToolModel {
 
     private static List<BigDecimal[]> getReducedIntensity(BigDecimal lambda, BigDecimal h, BigDecimal lambda_x, BigDecimal dx, BigDecimal n, BigDecimal nx, BigDecimal l) {
 
-        List<BigDecimal[]> xIntensity = new ArrayList<>();
         BigDecimal mainPeriod = getMainPeriod(lambda, lambda_x, l);
         BigDecimal dataStep = getRefinedDataStep(defaultStep, mainPeriod);
+
+        if (dataStep.equals(ZERO)) {
+            System.out.println("Going to mega reduced Intensity mode");
+            return getMegaReducedIntensity(lambda, h, lambda_x, dx, n, nx, l);
+        }
+
+        List<BigDecimal[]> xIntensity = new ArrayList<>();
 
         //Pi * dx / lambda
         BigDecimal pi_dx_lambda = bdPI.multiply(dx).divide(lambda, HALF_UP);
@@ -220,11 +221,11 @@ public class ToolModel {
             }
 
             //sin nx * ! ^ 2 / sin ! ^ 2
-            if(x.remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep) < 0 ){
+            if (x.remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep) < 0) {
                 xIright = nx.pow(2);
-            } else if(
+            } else if (
                     x.remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0
-                    || x.add(dataStep).remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0) {
+                            || x.add(dataStep).remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0) {
                 xIright = nx.pow(2).divide(TEN, HALF_UP);
             } else {
                 xIright = ZERO;
@@ -249,6 +250,76 @@ public class ToolModel {
         for (BigDecimal x = ZERO; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
 
             BigDecimal xi = funXI.apply(x);
+
+            BigDecimal[] row = new BigDecimal[2];
+            row[0] = x;
+            row[1] = xi;
+            xIntensity.add(row);
+        }
+        return xIntensity;
+    }
+
+    private static List<BigDecimal[]> getMegaReducedIntensity(BigDecimal lambda, BigDecimal h, BigDecimal lambda_x, BigDecimal dx, BigDecimal n, BigDecimal nx, BigDecimal l) {
+
+        List<BigDecimal[]> xIntensity = new ArrayList<>();
+
+        BigDecimal dataStep = defaultStep;
+
+        //Pi * dx / lambda
+        BigDecimal pi_dx_lambda = bdPI.multiply(dx).divide(lambda, HALF_UP);
+        //(n-1) * H / lambda
+        BigDecimal n_minus_one_H_lambda = n.subtract(ONE).multiply(h).divide(lambda, HALF_UP);
+        // Pi * lambdaX / lambda
+        BigDecimal pi_lx_lambda = bdPI.multiply(lambda_x).divide(lambda, HALF_UP);
+
+        //Pi * dx / lambda * ((n-1) * H / lambda - sin(arctg x / l))
+        Function<BigDecimal, BigDecimal> fun_x_toSin_dx = (BigDecimal x) -> pi_dx_lambda.multiply(
+                n_minus_one_H_lambda.subtract(
+                        bd(sin(atan(x.divide(l, HALF_UP).doubleValue())))
+                )
+        );
+
+        BiFunction<BigDecimal, Boolean, BigDecimal> funXI = (BigDecimal x, Boolean isOdd) -> {
+            BigDecimal x_toSin_dx = fun_x_toSin_dx.apply(x);
+
+            BigDecimal xIleft, xIright;
+
+            //sin ! ^ 2 / ! ^ 2
+            try {
+                xIleft = bd(sin((x_toSin_dx.doubleValue()))).pow(2).divide(x_toSin_dx.pow(2), HALF_UP);
+            } catch (ArithmeticException e) {
+                xIleft = ONE;
+            }
+
+            //sin nx * ! ^ 2 / sin ! ^ 2
+            if (isOdd) {
+                xIright = nx.pow(2);
+            } else {
+                xIright = ZERO;//nx.pow(2).divide(TEN, HALF_UP);
+            }
+            return xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP);
+        };
+
+
+        boolean isEven = true;
+        for (BigDecimal x = dataStep; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
+
+            isEven = !isEven;
+            BigDecimal negX = x.negate();
+
+            BigDecimal xi = funXI.apply(x, isEven);
+
+            BigDecimal[] row = new BigDecimal[2];
+            row[0] = negX;
+            row[1] = xi;
+            xIntensity.add(0, row);
+        }
+
+        isEven = false;
+        for (BigDecimal x = ZERO; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
+            isEven = !isEven;
+
+            BigDecimal xi = funXI.apply(x, isEven);
 
             BigDecimal[] row = new BigDecimal[2];
             row[0] = x;
