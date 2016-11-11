@@ -41,11 +41,11 @@ public class ToolModel {
 
 
         BigDecimal lambda = state.getLambda().multiply(TEN_POW_MINUS_NINE);
-        BigDecimal h = state.getH().multiply(TEN_POW_MINUS_NINE);
-        BigDecimal lambda_x = state.getLambda_x();
-        BigDecimal lambda_y = state.getLambda_y();
-        BigDecimal dx = state.getDx();
-        BigDecimal dy = state.getDy();
+        BigDecimal h = state.getH().multiply(TEN_POW_MINUS_THREE);
+        BigDecimal lambda_x = state.getLambda_x().multiply(TEN_POW_MINUS_THREE);
+        BigDecimal lambda_y = state.getLambda_y().multiply(TEN_POW_MINUS_THREE);
+        BigDecimal dx = state.getDx().multiply(TEN_POW_MINUS_THREE);
+        BigDecimal dy = state.getDy().multiply(TEN_POW_MINUS_THREE);
         BigDecimal n = state.getN();
         BigDecimal nx = state.getNx();
         BigDecimal ny = state.getNy();
@@ -154,7 +154,7 @@ public class ToolModel {
                 xIright = nx.pow(2);
             }
 
-            return xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP);
+            return getFinalIntensityValue(nx, xIleft, xIright);
         };
 
 
@@ -162,7 +162,7 @@ public class ToolModel {
 
             BigDecimal negX = x.negate();
 
-            BigDecimal xi = funXI.apply(x);
+            BigDecimal xi = funXI.apply(negX);
 
             BigDecimal[] row = new BigDecimal[2];
             row[0] = negX;
@@ -180,6 +180,12 @@ public class ToolModel {
             xIntensity.add(row);
         }
         return xIntensity;
+    }
+
+    private static BigDecimal getFinalIntensityValue(BigDecimal nx, BigDecimal xIleft, BigDecimal xIright) {
+        //return bd(log1p(xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP).doubleValue()) / log1p(1));
+        return bd(log1p(xIleft.multiply(xIright).doubleValue()) / log1p(nx.pow(2).doubleValue()));
+        //return xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP);
     }
 
     private static List<BigDecimal[]> getReducedIntensity(BigDecimal lambda, BigDecimal h, BigDecimal lambda_x, BigDecimal dx, BigDecimal n, BigDecimal nx, BigDecimal l) {
@@ -221,17 +227,17 @@ public class ToolModel {
             }
 
             //sin nx * ! ^ 2 / sin ! ^ 2
-            if (x.remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep) < 0) {
+            if (x.abs().remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep) < 0) {
                 xIright = nx.pow(2);
-            } else if (
-                    x.remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0
-                            || x.add(dataStep).remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0) {
+            } else 
+            if (x.abs().remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0
+                    || x.abs().add(dataStep).remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0) {
                 xIright = nx.pow(2).divide(TEN, HALF_UP);
             } else {
                 xIright = ZERO;
             }
 
-            return xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP);
+            return getFinalIntensityValue(nx, xIleft, xIright);
         };
 
 
@@ -239,7 +245,7 @@ public class ToolModel {
 
             BigDecimal negX = x.negate();
 
-            BigDecimal xi = funXI.apply(x);
+            BigDecimal xi = funXI.apply(negX);
 
             BigDecimal[] row = new BigDecimal[2];
             row[0] = negX;
@@ -297,7 +303,7 @@ public class ToolModel {
             } else {
                 xIright = ZERO;//nx.pow(2).divide(TEN, HALF_UP);
             }
-            return xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP);
+            return getFinalIntensityValue(nx, xIleft, xIright);
         };
 
 
@@ -307,7 +313,7 @@ public class ToolModel {
             isEven = !isEven;
             BigDecimal negX = x.negate();
 
-            BigDecimal xi = funXI.apply(x, isEven);
+            BigDecimal xi = funXI.apply(negX, isEven);
 
             BigDecimal[] row = new BigDecimal[2];
             row[0] = negX;

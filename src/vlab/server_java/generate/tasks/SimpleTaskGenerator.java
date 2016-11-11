@@ -38,13 +38,13 @@ public class SimpleTaskGenerator implements GenerateProcessorImpl.TaskGenerator 
                 BigDecimal Nx = bd(5);
                 BigDecimal Ny = bd(5);
                 BigDecimal n = bd(1.4);
-                BigDecimal lambda_x = bd(0.00002);//10 -6 -- 10 - 4
-                BigDecimal dx = bd(0.000005);
-                BigDecimal lambda_y = bd(0.0001);//10 -6 -- 10 - 4
-                BigDecimal dy = bd(0.000005);
+                BigDecimal lambda_x = bd(0.02);//mm //10 -6 -- 10 - 4
+                BigDecimal dx = bd(0.005);//mm
+                BigDecimal lambda_y = bd(0.1);//mm //10 -6 -- 10 - 4
+                BigDecimal dy = bd(0.005);//mm
 
 
-                BigDecimal H = ZERO;
+                BigDecimal H = bd(0.0001);
 
 
                 PlotData plotData = ToolModel.buildPlot(new ToolState(l, lambda, Nx, Ny, n, H, dx, dy, lambda_x, lambda_y));
