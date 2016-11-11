@@ -3,7 +3,7 @@ function init_lab() {
         container,
         bound_values = {
             H_bounds: [0, 0.1],
-            lambda_bounds: [0.000001, 0.0001],
+            lambda_bounds: [0.001, 0.1],
             n_bounds: [1, 1.6],
             N_bounds: [1, 2000000],
             l_bounds: [0.1, 2],
@@ -51,7 +51,7 @@ function init_lab() {
             '<label for="control_Nx"><span class="label_name"><i>N</i><sub><i>x</i></sub>:</span> <input class="control_Nx" id="control_Nx" type="range" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/><input class="Nx_value" type="number" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/></label>' +
             '<label for="control_dx"><span class="label_name"><i>d</i><sub><i>x</i></sub>:</span> <input class="control_dx" id="control_dx" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dx_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
             '<label for="control_lambda_x"><span class="label_name">&Lambda;<sub><i>x</i></sub>:</span> <input class="control_lambda_x" id="control_lambda_x" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_x_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> м</label>' +
-            '<label for="control_H"><span class="label_name"><i>H</i>:</span> <input class="control_H" id="control_H" type="range" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.01"/><input class="H_value" type="number" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.01"/> м</label>' +
+            '<label for="control_H"><span class="label_name"><i>H</i>:</span> <input class="control_H" id="control_H" type="range" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.0001"/><input class="H_value" type="number" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.0001"/> м</label>' +
             '<label for="control_n"><span class="label_name"><i>n</i>:</span> <input class="control_n" id="control_n" type="range" min="' + bound_values.n_bounds[0] + '" max="' + bound_values.n_bounds[1] + '" step="0.01"/><input class="n_value" type="number" min="' + bound_values.n_bounds[0] + '" max="' + bound_values.n_bounds[1] + '" step="0.01"/></label>' +
             '</div>' +
             '<div class="workspace_y_source"><span class="value_name dy"><i>d</i><sub><i>y</i></sub></span><span class="value_name ly">&Lambda;<sub><i>y</i></sub></span><canvas class="y_source" width="250" height="150"></canvas>' +
@@ -277,18 +277,30 @@ function init_lab() {
         ctx.beginPath();
         ctx.moveTo(1.5 * part, 85);
         ctx.lineTo(4.5 * part, 85);
+        ctx.moveTo(1.5 * part, 90);
+        ctx.lineTo(1.5 * part, 80);
+        ctx.moveTo(4.5 * part, 85);
+        ctx.lineTo(4.5 * part, 90);
         ctx.stroke();
         ctx.fillStyle = "#2d7637";
         ctx.strokeStyle = "#2d7637";
         ctx.beginPath();
         ctx.moveTo(2 * part, canvas.height - 30);
         ctx.lineTo(4 * part, canvas.height - 30);
+        ctx.moveTo(2 * part, canvas.height - 25);
+        ctx.lineTo(2 * part, canvas.height - 35);
+        ctx.moveTo(4 * part, canvas.height - 35);
+        ctx.lineTo(4 * part, canvas.height - 25);
         ctx.stroke();
         ctx.beginPath();
         ctx.fillStyle = "#de4545";
         ctx.strokeStyle = "#de4545";
         ctx.moveTo(4.5 * part, 30);
         ctx.lineTo(4.5 * part, 85);
+        ctx.moveTo(4.5 * part - 5, 30);
+        ctx.lineTo(4.5 * part + 5, 30);
+        ctx.moveTo(4.5 * part, 85);
+        ctx.lineTo(4.5 * part + 5, 85);
         ctx.stroke();
         ctx.fillText("H", 4.5 * part + 5, 61);
     }
@@ -354,6 +366,10 @@ function init_lab() {
         ctx.beginPath();
         ctx.moveTo(canvas.width / 2 + part_width / 2, part_height);
         ctx.lineTo(canvas.width / 2 + part_width / 2 + dent_width, part_height);
+        ctx.moveTo(canvas.width / 2 + part_width / 2, part_height - 5);
+        ctx.lineTo(canvas.width / 2 + part_width / 2, part_height + 5);
+        ctx.moveTo(canvas.width / 2 + part_width / 2 + dent_width, part_height - 5);
+        ctx.lineTo(canvas.width / 2 + part_width / 2 + dent_width, part_height + 5);
         ctx.stroke();
         ctx.fillText("H", canvas.width / 2 + part_width / 2 + dent_width / 2 - 5, part_height - 5);
         ctx.fillStyle = "#8b41be";
@@ -361,12 +377,20 @@ function init_lab() {
         ctx.beginPath();
         ctx.moveTo(canvas.width / 2 - part_width / 2, part_height * 1.5);
         ctx.lineTo(canvas.width / 2 - part_width / 2, part_height * 3.5);
+        ctx.moveTo(canvas.width / 2 - part_width / 2 - 5, part_height * 1.5);
+        ctx.lineTo(canvas.width / 2 - part_width / 2 + 5, part_height * 1.5);
+        ctx.moveTo(canvas.width / 2 - part_width / 2 - 5, part_height * 3.5);
+        ctx.lineTo(canvas.width / 2 - part_width / 2 + 5, part_height * 3.5);
         ctx.stroke();
         ctx.fillStyle = "#2d7637";
         ctx.strokeStyle = "#2d7637";
         ctx.beginPath();
         ctx.moveTo(canvas.width / 2 + part_width / 2, part_height * 2);
         ctx.lineTo(canvas.width / 2 + part_width / 2, part_height * 3);
+        ctx.moveTo(canvas.width / 2 + part_width / 2 - 5, part_height * 2);
+        ctx.lineTo(canvas.width / 2 + part_width / 2 + 5, part_height * 2);
+        ctx.moveTo(canvas.width / 2 + part_width / 2 - 5, part_height * 3);
+        ctx.lineTo(canvas.width / 2 + part_width / 2 + 5, part_height * 3);
         ctx.stroke();
     }
 
@@ -598,6 +622,7 @@ function init_lab() {
     function change_lambda_x_range(){
         $(".lambda_x_value").val($(".control_lambda_x").val());
         change_dx();
+        change_H();
     }
 
     function change_lambda_y_range(){
@@ -623,6 +648,16 @@ function init_lab() {
             dy_value = $(".control_lambda_y").val();
         }
         fill_range(".control_dy", ".dy_value", dy_value, $(".control_lambda_y").val());
+    }
+
+    function change_H(){
+        var H_value;
+        if ($(".control_H").val() < $(".control_lambda_x").val()){
+            H_value = $(".control_H").val();
+        } else {
+            H_value = $(".control_lambda_x").val();
+        }
+        fill_range(".control_H", ".H_value", H_value, $(".control_lambda_x").val());
     }
 
     function change_distance_value(){
@@ -809,6 +844,7 @@ function init_lab() {
             $(".lambda_x_value").val(bound_values.lambda_bounds[0]);
         }
         change_dx();
+        change_H();
     }
 
     function change_lambda_y_value(){
