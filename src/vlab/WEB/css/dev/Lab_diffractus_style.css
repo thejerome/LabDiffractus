@@ -118,11 +118,6 @@
     border: 1px solid #3d4652;
 }
 
-.block_workspace .workspace_x_source,
-.block_workspace .workspace_y_source {
-    position: relative;
-}
-
 .block_workspace .value_name {
     position: absolute;
 }
@@ -151,11 +146,6 @@
     left: 118px;
 }
 
-.block_workspace .workspace_x_source label:last-child,
-.block_workspace .workspace_y_source label:last-child {
-    margin-bottom: 10px;
-}
-
 .workspace_screen .screen_pattern,
 .workspace_screen .screen_comparison,
 .workspace_screen .screen_user {
@@ -173,6 +163,11 @@
 .workspace_y_source label {
     width: 95%;
     text-align: left;
+    margin-top: 10px;
+}
+
+.workspace_x_source label[for=control_H]{
+    margin-top: 40px;
 }
 
 .label_name {
@@ -211,6 +206,13 @@
     align-items: center;
     flex-wrap: wrap;
     align-content: space-between;
+}
+
+
+.block_workspace .workspace_x_source,
+.block_workspace .workspace_y_source {
+    position: relative;
+    align-content: flex-start;
 }
 
 .block_workspace .workspace_screen {
