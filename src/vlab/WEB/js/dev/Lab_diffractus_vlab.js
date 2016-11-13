@@ -2,8 +2,8 @@ function init_lab() {
     var help_slide_number = 0,
         container,
         bound_values = {
-            H_bounds: [0, 0.1],
-            lambda_bounds: [0.001, 0.1],
+            H_bounds: [0, 1000],
+            lambda_bounds: [1, 100],
             n_bounds: [1, 1.6],
             N_bounds: [1, 2000000],
             l_bounds: [0.1, 2],
@@ -49,15 +49,15 @@ function init_lab() {
             'id="control_distance" type="range" min="' + bound_values.l_bounds[0] + '" max="' + bound_values.l_bounds[1] + '" step="0.01"/><input class="distance_value" type="number" min="' + bound_values.l_bounds[0] + '" max="' + bound_values.l_bounds[1] + '" step="0.01"/> м</label></div>' +
             '<div class="workspace_x_source"><span class="value_name dx"><i>d</i><sub><i>x</i></sub></span><span class="value_name lx">&Lambda;<sub><i>x</i></sub></span><canvas class="x_source" width="250" height="150"></canvas>' +
             '<label for="control_Nx"><span class="label_name"><i>N</i><sub><i>x</i></sub>:</span> <input class="control_Nx" id="control_Nx" type="range" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/><input class="Nx_value" type="number" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/></label>' +
-            '<label for="control_dx"><span class="label_name"><i>d</i><sub><i>x</i></sub>:</span> <input class="control_dx" id="control_dx" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dx_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> мм</label>' +
-            '<label for="control_lambda_x"><span class="label_name">&Lambda;<sub><i>x</i></sub>:</span> <input class="control_lambda_x" id="control_lambda_x" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_x_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> мм</label>' +
-            '<label for="control_H"><span class="label_name"><i>H</i>:</span> <input class="control_H" id="control_H" type="range" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.00001"/><input class="H_value" type="number" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="0.00001"/> мм</label>' +
+            '<label for="control_dx"><span class="label_name"><i>d</i><sub><i>x</i></sub>:</span> <input class="control_dx" id="control_dx" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dx_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> мкм</label>' +
+            '<label for="control_lambda_x"><span class="label_name">&Lambda;<sub><i>x</i></sub>:</span> <input class="control_lambda_x" id="control_lambda_x" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_x_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> мкм</label>' +
+            '<label for="control_H"><span class="label_name"><i>H</i>:</span> <input class="control_H" id="control_H" type="range" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="1"/><input class="H_value" type="number" min="' + bound_values.H_bounds[0] + '" max="' + bound_values.H_bounds[1] + '" step="1"/> нм</label>' +
             '<label for="control_n"><span class="label_name"><i>n</i>:</span> <input class="control_n" id="control_n" type="range" min="' + bound_values.n_bounds[0] + '" max="' + bound_values.n_bounds[1] + '" step="0.01"/><input class="n_value" type="number" min="' + bound_values.n_bounds[0] + '" max="' + bound_values.n_bounds[1] + '" step="0.01"/></label>' +
             '</div>' +
             '<div class="workspace_y_source"><span class="value_name dy"><i>d</i><sub><i>y</i></sub></span><span class="value_name ly">&Lambda;<sub><i>y</i></sub></span><canvas class="y_source" width="250" height="150"></canvas>' +
             '<label for="control_Ny"><span class="label_name"><i>N</i><sub><i>y</i></sub>:</span> <input class="control_Ny" id="control_Ny" type="range" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/><input class="Ny_value" type="number" min="' + bound_values.N_bounds[0] + '" max="' + bound_values.N_bounds[1] + '" step="1"/></label>' +
-            '<label for="control_dy"><span class="label_name"><i>d</i><sub><i>y</i></sub>:</span> <input class="control_dy" id="control_dy" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dy_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> мм</label>' +
-            '<label for="control_lambda_y"><span class="label_name">&Lambda;<sub><i>y</i></sub>:</span> <input class="control_lambda_y" id="control_lambda_y" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_y_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> мм</label>' +
+            '<label for="control_dy"><span class="label_name"><i>d</i><sub><i>y</i></sub>:</span> <input class="control_dy" id="control_dy" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="dy_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> мкм</label>' +
+            '<label for="control_lambda_y"><span class="label_name">&Lambda;<sub><i>y</i></sub>:</span> <input class="control_lambda_y" id="control_lambda_y" type="range" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/><input class="lambda_y_value" type="number" min="' + bound_values.lambda_bounds[0] + '" max="' + bound_values.lambda_bounds[1] + '" step="' + bound_values.lambda_bounds[0] + '"/> мкм</label>' +
             '</div><div class="workspace_screen">' +
             '<div class="screen_pattern plot_pattern screen_comparison_on screen_user_on"><svg width="240" height="240"></svg></div>' +
             '<div class="screen_user plot_user screen_comparison_on screen_pattern_on"><svg width="240" height="240"></svg></div>' +
@@ -622,7 +622,6 @@ function init_lab() {
     function change_lambda_x_range(){
         $(".lambda_x_value").val($(".control_lambda_x").val());
         change_dx();
-        change_H();
     }
 
     function change_lambda_y_range(){
@@ -648,16 +647,6 @@ function init_lab() {
             dy_value = $(".control_lambda_y").val();
         }
         fill_range(".control_dy", ".dy_value", dy_value, $(".control_lambda_y").val());
-    }
-
-    function change_H(){
-        var H_value;
-        if ($(".control_H").val() < 1 / 10 * ($(".control_lambda_x").val())){
-            H_value = $(".control_H").val();
-        } else {
-            H_value = 1 / 10 * ($(".control_lambda_x").val());
-        }
-        fill_range(".control_H", ".H_value", H_value, 1 / 10 * ($(".control_lambda_x").val()));
     }
 
     function change_distance_value(){
@@ -844,7 +833,6 @@ function init_lab() {
             $(".lambda_x_value").val(bound_values.lambda_bounds[0]);
         }
         change_dx();
-        change_H();
     }
 
     function change_lambda_y_value(){
