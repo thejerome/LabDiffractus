@@ -189,7 +189,7 @@
 .workspace_y_source label input[type=range],
 .workspace_demonstration label input.control_distance,
 .workspace_demonstration label input.control_light_length {
-    width: 45%;
+    width: 40%;
     vertical-align: middle;
 }
 
