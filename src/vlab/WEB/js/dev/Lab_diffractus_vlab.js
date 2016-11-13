@@ -496,7 +496,7 @@ function init_lab() {
             .y(function (d) {
                 return y_range(d[y_coefficient]);
             })
-            .interpolate('cardinal');
+            .interpolate('linear');
         plot.append("svg:g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
