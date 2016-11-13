@@ -13,10 +13,10 @@ import vlab.server_java.model.Variant;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-import static java.math.BigDecimal.ONE;
-import static java.math.BigDecimal.ROUND_HALF_UP;
-import static java.math.BigDecimal.ZERO;
+import static java.math.BigDecimal.*;
+import static java.math.RoundingMode.HALF_UP;
 import static vlab.server_java.model.util.Util.bd;
 
 /**
@@ -32,56 +32,43 @@ public class SimpleTaskChecker implements CheckProcessorImpl.TaskChecker {
             ToolState toolState = objectMapper.readValue(instructions, ToolState.class);
             Variant variant = objectMapper.readValue(generatingResult.getCode(), Variant.class);
             BigDecimal extraLambda = new BigDecimal(generatingResult.getInstructions());
-/*
-            boolean isLambdaOk = toolState.getLight_length().compareTo(variant.getLight_length().add(extraLambda)) == 0;
-            boolean isDOk = toolState.getLight_slits_distance().compareTo(variant.getLight_slits_distance()) == 0;
-            boolean isAlphaOk = toolState.getLight_width().compareTo(variant.getLight_width()) == 0;
-            boolean isAOk = toolState.getBetween_slits_width().compareTo(variant.getBetween_slits_width().multiply(bd(3))) == 0;
-            boolean isSleetsOk = !toolState.isLeft_slit_closed() && !toolState.isRight_slit_closed();
 
-            BigDecimal eq0 = variant.getBetween_slits_width().divide(
-                    variant.getLight_length().multiply(variant.getLight_screen_distance().subtract(variant.getLight_slits_distance())),
-                    10, ROUND_HALF_UP
-            );
-            BigDecimal eq1 = toolState.getBetween_slits_width().divide(
-                    toolState.getLight_length().multiply(toolState.getLight_screen_distance().subtract(toolState.getLight_slits_distance())),
-                    10, ROUND_HALF_UP
-            );
+            BigDecimal lamX1 = variant.getLambda_x();
+            BigDecimal lam1 = variant.getLambda();
+            BigDecimal l1 = variant.getL();
 
-            System.out.println("variantMetric = " + eq0);
-            System.out.println("userMetric = " + eq1);
+            BigDecimal lamX2 = toolState.getLambda_x();
+            BigDecimal lam2 = toolState.getLambda();
+            BigDecimal l2 = toolState.getL();
 
-            boolean isEqOk = eq0.subtract(eq1).setScale(6, ROUND_HALF_UP).compareTo(ZERO) == 0;
+            BigDecimal dx1 = toolState.getDx();
 
-*/
+            BigDecimal lxLamL1 = lamX1.divide(lam1.multiply(l1), HALF_UP);
+            BigDecimal lxLamL2 = lamX2.divide(lam2.multiply(l2), HALF_UP);
+
+            boolean isLxLamL1Ok = lxLamL1.subtract(lxLamL2).abs().compareTo(lxLamL1.multiply(bd(0.02))) <= 0;
+
+            boolean isDxLxOk = lamX2.multiply(bd(0.5)).subtract(dx1).abs().compareTo(dx1.multiply(bd(0.02))) <= 0;
+
             BigDecimal points;
             String comment;
 
-            if(/*isLambdaOk && isDOk && isAlphaOk && isAOk && isSleetsOk*/ true){
-                if (true /*isEqOk*/){
+            if( isLxLamL1Ok ){
+                if ( isDxLxOk ){
                     points = ONE;
                     comment = "Верно!";
                 } else {
                     points = bd(0.3);
-                    comment = "Исходная и итоговая интерференционные картины не совпадают";
+                    comment = "Условия задания не выполнены.";
                 }
             } else {
                 points = ZERO;
-                comment = "Положение установки не соотвествует требованиям задания.";
+                comment = "Условия задания не выполнены.";
             }
-
-
             return new CheckingSingleConditionResult(points, comment);
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
             return new CheckingSingleConditionResult(ZERO, e.getMessage());
         }
-
-
-
-
     }
 }

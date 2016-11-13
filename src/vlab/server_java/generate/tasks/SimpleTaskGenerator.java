@@ -10,12 +10,8 @@ import vlab.server_java.model.Variant;
 import vlab.server_java.model.tool.ToolModel;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
 
-import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.TEN;
-import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
 import static vlab.server_java.model.util.Util.*;
 
@@ -24,104 +20,41 @@ import static vlab.server_java.model.util.Util.*;
  */
 public class SimpleTaskGenerator implements GenerateProcessorImpl.TaskGenerator {
 
-        public GeneratingResult generate(String condition) {
-            ObjectMapper mapper = new ObjectMapper();
+    public GeneratingResult generate(String condition) {
+        ObjectMapper mapper = new ObjectMapper();
 
-            //do Generate logic here
-            String text = "Ваш вариант загружен в установку";
-            String code = " ";
-            String instructions = " ";
-            try {
+        //do Generate logic here
+        String text = "Ваш вариант загружен в установку";
+        String code = " ";
+        String instructions = " ";
+        try {
 
-                BigDecimal lambda = bd(500);//nm
-                BigDecimal l = bd(0.5);
-                BigDecimal Nx = bd(10);
-                BigDecimal Ny = bd(10);
-                BigDecimal n = bd(1.4);
-                BigDecimal lambda_x = bd(10);//mm //10 -6 -- 10 - 4
-                BigDecimal dx = bd(5);//mm
-                BigDecimal lambda_y = bd(100);//mm //10 -6 -- 10 - 4
-                BigDecimal dy = bd(50);//mm
+            //300<λ<600, 0.5<L<1.0, Nx=50, dx=0.013,Ʌx =0.06,  Ny=1, dy=0.002, Ʌy =0.011, H=0, n=1.
 
+            BigDecimal lambda = bd(getRandomIntegerBetween(400, 600));//nm
+            BigDecimal l = bd(getRandomIntegerBetween(5, 10)).divide(TEN, HALF_UP);
+            BigDecimal Nx = bd(50);
+            BigDecimal Ny = bd(1);
+            BigDecimal n = bd(1);
+            BigDecimal lambda_x = bd(60);//mm //10 -6 -- 10 - 4
+            BigDecimal dx = bd(13);//mm
+            BigDecimal lambda_y = bd(11);//mm //10 -6 -- 10 - 4
+            BigDecimal dy = bd(2);//mm
+            BigDecimal H = bd(0);
 
-                BigDecimal H = bd(100);
+            PlotData plotData = ToolModel.buildPlot(new ToolState(l, lambda, Nx, Ny, n, H, dx, dy, lambda_x, lambda_y));
 
+            Variant variant = new Variant(l, lambda, Nx, Ny, n, H, dx, dy, lambda_x, lambda_y,
+                    plotData.getVisibility(), plotData.getX_intensity(), plotData.getY_intensity());
 
-                PlotData plotData = ToolModel.buildPlot(new ToolState(l, lambda, Nx, Ny, n, H, dx, dy, lambda_x, lambda_y));
+            code = mapper.writeValueAsString(variant);
 
-                Variant variant = new Variant(l, lambda, Nx, Ny, n, H, dx, dy, lambda_x, lambda_y,
-                        plotData.getVisibility(), plotData.getX_intensity(), plotData.getY_intensity());
-
-                code = mapper.writeValueAsString(variant);
-
-
-
-                /*
-
-                BigDecimal light_slits_distance = bd("0.5");
-                BigDecimal light_screen_distance = bd("1.0");
-                BigDecimal[] light_screen_range = new BigDecimal[]{bd("0.01"), bd("2")};
-                BigDecimal light_screen_step = bd("0.01");
-                BigDecimal light_width = bd("0.01");
-                BigDecimal[] light_width_range = new BigDecimal[]{bd("0.01"), bd("10")};
-                BigDecimal light_width_step = bd("0.01");
-                BigDecimal light_length = bd("500");
-                BigDecimal[] light_length_range = new BigDecimal[]{bd("380"), bd("780")};
-                BigDecimal light_length_step = bd("1");
-                boolean right_slit_closed = false;
-                boolean left_slit_closed = false;
-                BigDecimal between_slits_width = bd("0.01");
-                BigDecimal[] between_slits_range = new BigDecimal[]{bd("0.01"), bd("3")};
-                BigDecimal between_slits_step = bd("0.01");
-
-                BigDecimal extra_light_length = bd(getRandomIntegerBetween(50, 200));
-
-                PlotData plotData = ToolModel.buildPlot(
-                        new ToolState(
-                                light_slits_distance,
-                                light_screen_distance,
-                                light_width,
-                                light_length,
-                                between_slits_width,
-                                left_slit_closed,
-                                right_slit_closed
-                        )
-                );
-                List<BigDecimal[]> data_plot_pattern = plotData.getData_plot();
-                BigDecimal visibility = plotData.getVisibility();
-
-                text = "Требуется увеличть значение длины света на " + extra_light_length + " нм.";
-
-                code = mapper.writeValueAsString(
-                        new Variant(light_slits_distance,
-                                light_screen_distance,
-                                light_screen_range,
-                                light_screen_step,
-                                light_width,
-                                light_width_range,
-                                light_width_step,
-                                light_length,
-                                light_length_range,
-                                light_length_step,
-                                right_slit_closed,
-                                left_slit_closed,
-                                between_slits_width,
-                                between_slits_range,
-                                between_slits_step,
-                                visibility,
-                                data_plot_pattern
-                        )
-                );
-
-                instructions = extra_light_length.toString();
-                */
-
-            } catch (JsonProcessingException e) {
-                code = "Failed, " + e.getOriginalMessage();
-            }
-
-            return new GeneratingResult(text, escapeParam(code), escapeParam(instructions));
+        } catch (JsonProcessingException e) {
+            code = "Failed, " + e.getOriginalMessage();
         }
+
+        return new GeneratingResult(text, escapeParam(code), escapeParam(instructions));
+    }
 
     public static void main(String[] args) {
         System.out.println(new SimpleTaskGenerator().generate("").getCode());
