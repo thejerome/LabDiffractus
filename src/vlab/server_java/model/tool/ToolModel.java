@@ -12,7 +12,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.lang.Math.*;
-import static java.math.BigDecimal.*;
+import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.ZERO;
+import static java.math.RoundingMode.HALF_DOWN;
 import static java.math.RoundingMode.HALF_UP;
 import static vlab.server_java.model.util.Util.bd;
 
@@ -23,6 +25,7 @@ public class ToolModel {
 
     public static final BigDecimal TEN_POW_MINUS_NINE = new BigDecimal("0.000000001");
     public static final BigDecimal TEN_POW_MINUS_THREE = new BigDecimal("0.001");
+    public static final BigDecimal TEN_POW_MINUS_SIX = new BigDecimal("0.000001");
     public static final BigDecimal bdPI = new BigDecimal(PI);
     private static final BigDecimal halfWidth = bd("0.05");
     private static final BigDecimal defaultStep = bd("0.0005");
@@ -32,7 +35,6 @@ public class ToolModel {
         return (lambda.divide(lambda_x, HALF_UP).multiply(l));
     }
 
-
     public static BigDecimal getSecondaryPeriod(BigDecimal lambda, BigDecimal lambda_x, BigDecimal l, BigDecimal nx) {
         return (lambda.divide(lambda_x, HALF_UP).multiply(l)).divide(nx, HALF_UP);
     }
@@ -41,16 +43,17 @@ public class ToolModel {
 
 
         BigDecimal lambda = state.getLambda().multiply(TEN_POW_MINUS_NINE);
-        BigDecimal h = state.getH().multiply(TEN_POW_MINUS_THREE);
-        BigDecimal lambda_x = state.getLambda_x().multiply(TEN_POW_MINUS_THREE);
-        BigDecimal lambda_y = state.getLambda_y().multiply(TEN_POW_MINUS_THREE);
-        BigDecimal dx = state.getDx().multiply(TEN_POW_MINUS_THREE);
-        BigDecimal dy = state.getDy().multiply(TEN_POW_MINUS_THREE);
+        BigDecimal h = state.getH().multiply(TEN_POW_MINUS_NINE);
+        BigDecimal lambda_x = state.getLambda_x().multiply(TEN_POW_MINUS_SIX);
+        BigDecimal lambda_y = state.getLambda_y().multiply(TEN_POW_MINUS_SIX);
+        BigDecimal dx = state.getDx().multiply(TEN_POW_MINUS_SIX);
+        BigDecimal dy = state.getDy().multiply(TEN_POW_MINUS_SIX);
         BigDecimal n = state.getN();
         BigDecimal nx = state.getNx();
         BigDecimal ny = state.getNy();
         BigDecimal l = state.getL();
 
+        System.out.println();
 
         BigDecimal dataStepX = defaultStep;
         BigDecimal dataStepY = defaultStep;
@@ -78,8 +81,15 @@ public class ToolModel {
         System.out.println("dataStepY = " + dataStepY);
 
 
+        System.out.println();
+        System.out.println("for X:");
         List<BigDecimal[]> xIntensity = getAllIntensity(dataStepX, lambda, h, lambda_x, dx, n, nx, l);
+        System.out.println("end of X.");
+
+        System.out.println();
+        System.out.println("for Y:");
         List<BigDecimal[]> yIntensity = getAllIntensity(dataStepY, lambda, ZERO, lambda_y, dy, n, ny, l);
+        System.out.println("end of Y");
 
         PlotData plotData = new PlotData(xIntensity, yIntensity, ONE);
 
@@ -105,13 +115,19 @@ public class ToolModel {
         return dataStep;
     }
 
+    private static BigDecimal getFinalIntensityValue(BigDecimal nx, BigDecimal xIleft, BigDecimal xIright) {
+        //return bd(log1p(xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP).doubleValue()) / log1p(1));
+        return bd(log1p(xIleft.multiply(xIright).doubleValue()) / log1p(nx.pow(2).doubleValue()));
+        //return xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP);
+    }
+
     private static List<BigDecimal[]> getAllIntensity(BigDecimal dataStep, BigDecimal lambda, BigDecimal h, BigDecimal lambda_x, BigDecimal dx, BigDecimal n, BigDecimal nx, BigDecimal l) {
         if (dataStep.equals(ZERO)) {
             System.out.println("Going to reduced Intensity mode");
             return getReducedIntensity(lambda, h, lambda_x, dx, n, nx, l);
         }
 
-        List<BigDecimal[]> xIntensity = new ArrayList<>();
+        BigDecimal maxIntensityPoint = getMaxIntensityPoint(h, lambda_x, n, l);
 
         //Pi * dx / lambda
         BigDecimal pi_dx_lambda = bdPI.multiply(dx).divide(lambda, HALF_UP);
@@ -158,37 +174,25 @@ public class ToolModel {
         };
 
 
-        for (BigDecimal x = dataStep; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
-
-            BigDecimal negX = x.negate();
-
-            BigDecimal xi = funXI.apply(negX);
-
-            BigDecimal[] row = new BigDecimal[2];
-            row[0] = negX;
-            row[1] = xi;
-            xIntensity.add(0, row);
-        }
-
-        for (BigDecimal x = ZERO; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
-
-            BigDecimal xi = funXI.apply(x);
-
-            BigDecimal[] row = new BigDecimal[2];
-            row[0] = x;
-            row[1] = xi;
-            xIntensity.add(row);
-        }
-        return xIntensity;
+        return calcIntensityCycle(dataStep, maxIntensityPoint, funXI);
     }
 
-    private static BigDecimal getFinalIntensityValue(BigDecimal nx, BigDecimal xIleft, BigDecimal xIright) {
-        //return bd(log1p(xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP).doubleValue()) / log1p(1));
-        return bd(log1p(xIleft.multiply(xIright).doubleValue()) / log1p(nx.pow(2).doubleValue()));
-        //return xIleft.multiply(xIright).divide(nx.pow(2), HALF_UP);
+    private static BigDecimal getMaxIntensityPoint(BigDecimal h, BigDecimal lambda_x, BigDecimal n, BigDecimal l) {
+        BigDecimal maxIntensityPoint = l.multiply(
+                bd(
+                        tan(
+                                asin(n.subtract(ONE).multiply(h).divide(lambda_x, HALF_UP).doubleValue())
+                        )
+                )
+        ).setScale(6, HALF_UP);//l * sin (asin (h / lx) - asin (h / (lx * n)))
+        System.out.println("maxIntensityPoint = " + maxIntensityPoint);
+        return maxIntensityPoint;
     }
 
     private static List<BigDecimal[]> getReducedIntensity(BigDecimal lambda, BigDecimal h, BigDecimal lambda_x, BigDecimal dx, BigDecimal n, BigDecimal nx, BigDecimal l) {
+
+        BigDecimal maxIntensityPoint = h.divide(lambda_x, HALF_UP).multiply(l).divide(n, HALF_UP);
+        System.out.println("maxIntensityPoint = " + maxIntensityPoint);
 
         BigDecimal mainPeriod = getMainPeriod(lambda, lambda_x, l);
         BigDecimal dataStep = getRefinedDataStep(defaultStep, mainPeriod);
@@ -229,11 +233,14 @@ public class ToolModel {
             //sin nx * ! ^ 2 / sin ! ^ 2
             if (x.abs().remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep) < 0) {
                 xIright = nx.pow(2);
-            } else 
+            }
+            /*else
             if (x.abs().remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0
                     || x.abs().add(dataStep).remainder(mainPeriod, MathContext.UNLIMITED).compareTo(dataStep.multiply(bd(2))) < 0) {
                 xIright = nx.pow(2).divide(TEN, HALF_UP);
-            } else {
+            }
+            */
+            else {
                 xIright = ZERO;
             }
 
@@ -241,35 +248,15 @@ public class ToolModel {
         };
 
 
-        for (BigDecimal x = dataStep; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
-
-            BigDecimal negX = x.negate();
-
-            BigDecimal xi = funXI.apply(negX);
-
-            BigDecimal[] row = new BigDecimal[2];
-            row[0] = negX;
-            row[1] = xi;
-            xIntensity.add(0, row);
-        }
-
-        for (BigDecimal x = ZERO; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
-
-            BigDecimal xi = funXI.apply(x);
-
-            BigDecimal[] row = new BigDecimal[2];
-            row[0] = x;
-            row[1] = xi;
-            xIntensity.add(row);
-        }
-        return xIntensity;
+        return calcIntensityCycle(dataStep, maxIntensityPoint, funXI);
     }
 
     private static List<BigDecimal[]> getMegaReducedIntensity(BigDecimal lambda, BigDecimal h, BigDecimal lambda_x, BigDecimal dx, BigDecimal n, BigDecimal nx, BigDecimal l) {
 
-        List<BigDecimal[]> xIntensity = new ArrayList<>();
+        BigDecimal maxIntensityPoint = h.divide(lambda_x, HALF_UP).multiply(l).divide(n, HALF_UP);
+        System.out.println("maxIntensityPoint = " + maxIntensityPoint);
 
-        BigDecimal dataStep = defaultStep;
+        BigDecimal dataStep = getMainPeriod(lambda, lambda_x, l).divide(bd(2), HALF_UP);
 
         //Pi * dx / lambda
         BigDecimal pi_dx_lambda = bdPI.multiply(dx).divide(lambda, HALF_UP);
@@ -307,22 +294,48 @@ public class ToolModel {
         };
 
 
-        boolean isEven = true;
-        for (BigDecimal x = dataStep; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
 
-            isEven = !isEven;
-            BigDecimal negX = x.negate();
+        return calcIntensityCycle(dataStep, maxIntensityPoint, funXI);
+    }
 
-            BigDecimal xi = funXI.apply(negX, isEven);
+    private static List<BigDecimal[]> calcIntensityCycle(BigDecimal dataStep, BigDecimal maxIntensityPoint, Function<BigDecimal, BigDecimal> funXI) {
+        List<BigDecimal[]> xIntensity = new LinkedList<>();
+
+        int i = 0, j = 0;
+        for (BigDecimal x = maxIntensityPoint.subtract(dataStep); x.compareTo(halfWidth.negate()) >= 0; x = x.subtract(dataStep)) {
+            i++;
+
+            BigDecimal xi = funXI.apply(x);
 
             BigDecimal[] row = new BigDecimal[2];
-            row[0] = negX;
+            row[0] = x;
             row[1] = xi;
             xIntensity.add(0, row);
         }
 
-        isEven = false;
-        for (BigDecimal x = ZERO; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
+        for (BigDecimal x = maxIntensityPoint; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
+            j++;
+            BigDecimal xi = funXI.apply(x);
+
+            BigDecimal[] row = new BigDecimal[2];
+            row[0] = x;
+            row[1] = xi;
+            xIntensity.add(row);
+        }
+
+        System.out.println("left items = " + i);
+        System.out.println("right items = " + j);
+
+        return xIntensity;
+    }
+
+    private static List<BigDecimal[]> calcIntensityCycle(BigDecimal dataStep, BigDecimal maxIntensityPoint, BiFunction<BigDecimal, Boolean, BigDecimal> funXI) {
+        List<BigDecimal[]> xIntensity = new LinkedList<>();
+
+        int i = 0, j = 0;
+        boolean isEven = true;
+        for (BigDecimal x = maxIntensityPoint.subtract(dataStep); x.compareTo(halfWidth.negate()) >= 0; x = x.subtract(dataStep)) {
+            i++;
             isEven = !isEven;
 
             BigDecimal xi = funXI.apply(x, isEven);
@@ -330,8 +343,24 @@ public class ToolModel {
             BigDecimal[] row = new BigDecimal[2];
             row[0] = x;
             row[1] = xi;
+            xIntensity.add(0, row);
+        }
+
+        isEven = false;
+        for (BigDecimal x = maxIntensityPoint; x.compareTo(halfWidth) <= 0; x = x.add(dataStep)) {
+            j++;
+            isEven = !isEven;
+            BigDecimal xi = funXI.apply(x, isEven);
+
+            BigDecimal[] row = new BigDecimal[2];
+            row[0] = x;
+            row[1] = xi;
             xIntensity.add(row);
         }
+
+        System.out.println("left items = " + i);
+        System.out.println("right items = " + j);
+
         return xIntensity;
     }
 
