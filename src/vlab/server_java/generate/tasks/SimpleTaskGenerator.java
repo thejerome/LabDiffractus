@@ -31,7 +31,7 @@ public class SimpleTaskGenerator implements GenerateProcessorImpl.TaskGenerator 
 
             //300<λ<600, 0.5<L<1.0, Nx=50, dx=0.013,Ʌx =0.06,  Ny=1, dy=0.002, Ʌy =0.011, H=0, n=1.
 
-            BigDecimal lambda = bd(getRandomIntegerBetween(400, 600));//nm
+            BigDecimal lambda = bd(getRandomIntegerBetween(40, 60) * 10);//nm
             BigDecimal l = bd(getRandomIntegerBetween(5, 10)).divide(TEN, HALF_UP);
             BigDecimal Nx = bd(50);
             BigDecimal Ny = bd(1);

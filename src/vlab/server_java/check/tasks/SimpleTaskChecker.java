@@ -31,7 +31,6 @@ public class SimpleTaskChecker implements CheckProcessorImpl.TaskChecker {
         try {
             ToolState toolState = objectMapper.readValue(instructions, ToolState.class);
             Variant variant = objectMapper.readValue(generatingResult.getCode(), Variant.class);
-            BigDecimal extraLambda = new BigDecimal(generatingResult.getInstructions());
 
             BigDecimal lamX1 = variant.getLambda_x();
             BigDecimal lam1 = variant.getLambda();
