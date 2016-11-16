@@ -57,7 +57,7 @@ public class SimpleTaskChecker implements CheckProcessorImpl.TaskChecker {
                     points = ONE;
                     comment = "Верно!";
                 } else {
-                    points = bd(0.3);
+                    points = ZERO;
                     comment = "Условия задания не выполнены.";
                 }
             } else {
