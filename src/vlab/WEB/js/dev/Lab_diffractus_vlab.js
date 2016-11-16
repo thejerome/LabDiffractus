@@ -665,7 +665,7 @@ function init_lab() {
 
     function change_distance_value(){
         if ($.isNumeric($(".distance_value").val())) {
-            if (($(".distance_value").val() <= bound_values.l_bounds[1]) &
+            if (($(".distance_value").val() <= bound_values.l_bounds[1]) &&
                 ($(".distance_value").val() >= bound_values.l_bounds[0])) {
                 $(".control_distance").val($(".distance_value").val());
                 $(".distance_value").val($(".control_distance").val());
@@ -689,7 +689,7 @@ function init_lab() {
 
     function change_Nx_value(){
         if ($.isNumeric($(".Nx_value").val())) {
-            if (($(".Nx_value").val() <= bound_values.N_bounds[1]) &
+            if (($(".Nx_value").val() <= bound_values.N_bounds[1]) &&
                 ($(".Nx_value").val() >= bound_values.N_bounds[0])) {
                 $(".control_Nx").val($(".Nx_value").val());
                 $(".Nx_value").val($(".control_Nx").val());
@@ -712,16 +712,16 @@ function init_lab() {
 
     function change_Ny_value(){
         if ($.isNumeric($(".Ny_value").val())) {
-            if (($(".Ny_value").val() <= bound_values.N_bounds[1]) &
-                ($(".Ny_value").val() >= bound_values.N_bounds[0])) {
+            if ((parseFloat($(".Ny_value").val()) <= bound_values.N_bounds[1]) &&
+                (parseFloat($(".Ny_value").val()) >= bound_values.N_bounds[0])) {
                 $(".control_Ny").val($(".Ny_value").val());
                 $(".Ny_value").val($(".control_Ny").val());
             } else {
-                if ($(".Ny_value").val() > bound_values.N_bounds[1]) {
+                if (parseFloat($(".Ny_value").val()) > bound_values.N_bounds[1]) {
                     $(".control_Ny").val(bound_values.N_bounds[1]);
                     $(".Ny_value").val(bound_values.N_bounds[1]);
                 } else {
-                    if ($(".Ny_value").val() < bound_values.N_bounds[0]) {
+                    if (parseFloat($(".Ny_value").val()) < bound_values.N_bounds[0]) {
                         $(".control_Ny").val(bound_values.N_bounds[0]);
                         $(".Ny_value").val(bound_values.N_bounds[0]);
                     }
@@ -735,7 +735,7 @@ function init_lab() {
 
     function change_n_value(){
         if ($.isNumeric($(".n_value").val())) {
-            if (($(".n_value").val() <= bound_values.n_bounds[1]) &
+            if (($(".n_value").val() <= bound_values.n_bounds[1]) &&
                 ($(".n_value").val() >= bound_values.n_bounds[0])) {
                 $(".control_n").val($(".n_value").val());
                 $(".n_value").val($(".control_n").val());
@@ -758,7 +758,7 @@ function init_lab() {
 
     function change_H_value(){
         if ($.isNumeric($(".H_value").val())) {
-            if (($(".H_value").val() <= bound_values.H_bounds[1]) &
+            if (($(".H_value").val() <= bound_values.H_bounds[1]) &&
                 ($(".H_value").val() >= bound_values.H_bounds[0])) {
                 $(".control_H").val($(".H_value").val());
                 $(".H_value").val($(".control_H").val());
@@ -781,14 +781,14 @@ function init_lab() {
 
     function change_dx_value(){
         if ($.isNumeric($(".dx_value").val())) {
-            if (parseFloat(($(".dx_value").val()) <= parseFloat($(".lambda_x_value").val())) &
+            if ((parseFloat($(".dx_value").val()) <= parseFloat($(".lambda_x_value").val())) &&
                 (parseFloat($(".dx_value").val()) >= parseFloat(bound_values.lambda_bounds[0]))) {
                 $(".control_dx").val($(".dx_value").val());
                 $(".dx_value").val($(".control_dx").val());
             } else {
                 if (parseFloat($(".dx_value").val()) > parseFloat($(".lambda_x_value").val())) {
                     $(".control_dx").val($(".lambda_x_value").val());
-                    $(".dx_value").val($(".lambda_x_value").val());
+                    $(".dx_value").val($(".control_dx").val());
                 } else {
                     if (parseFloat($(".dx_value").val()) < parseFloat(bound_values.lambda_bounds[0])) {
                         $(".control_dx").val(bound_values.lambda_bounds[0]);
@@ -804,14 +804,14 @@ function init_lab() {
 
     function change_dy_value(){
         if ($.isNumeric($(".dy_value").val())) {
-            if ((parseFloat($(".dy_value").val()) <= parseFloat($(".lambda_y_value").val())) &
+            if ((parseFloat($(".dy_value").val()) <= parseFloat($(".lambda_y_value").val())) &&
                 (parseFloat($(".dy_value").val()) >= parseFloat(bound_values.lambda_bounds[0]))) {
                 $(".control_dy").val($(".dy_value").val());
                 $(".dy_value").val($(".control_dy").val());
             } else {
                 if (parseFloat($(".dy_value").val()) > parseFloat($(".lambda_y_value").val())) {
                     $(".control_dy").val($(".lambda_y_value").val());
-                    $(".dy_value").val($(".lambda_y_value").val());
+                    $(".dy_value").val($(".control_dy").val());
                 } else {
                     if (parseFloat($(".dy_value").val()) < parseFloat(bound_values.lambda_bounds[0])) {
                         $(".control_dy").val(bound_values.lambda_bounds[0]);
@@ -827,7 +827,7 @@ function init_lab() {
 
     function change_lambda_x_value(){
         if ($.isNumeric($(".lambda_x_value").val())) {
-            if (($(".lambda_x_value").val() <= bound_values.lambda_bounds[1]) &
+            if (($(".lambda_x_value").val() <= bound_values.lambda_bounds[1]) &&
                 ($(".lambda_x_value").val() >= bound_values.lambda_bounds[0])) {
                 $(".control_lambda_x").val($(".lambda_x_value").val());
                 $(".lambda_x_value").val($(".control_lambda_x").val());
@@ -851,7 +851,7 @@ function init_lab() {
 
     function change_lambda_y_value(){
         if ($.isNumeric($(".lambda_y_value").val())) {
-            if (($(".lambda_y_value").val() <= bound_values.lambda_bounds[1]) &
+            if (($(".lambda_y_value").val() <= bound_values.lambda_bounds[1]) &&
                 ($(".lambda_y_value").val() >= bound_values.lambda_bounds[0])) {
                 $(".control_lambda_y").val($(".lambda_y_value").val());
                 $(".lambda_y_value").val($(".control_lambda_y").val());
@@ -875,7 +875,7 @@ function init_lab() {
 
     function change_length_value(){
         if ($.isNumeric($(".light_length_value").val())) {
-            if (($(".light_length_value").val() <= bound_values.length_bounds[1]) &
+            if (($(".light_length_value").val() <= bound_values.length_bounds[1]) &&
                 ($(".light_length_value").val() >= bound_values.length_bounds[0])) {
                 $(".control_light_length").val($(".light_length_value").val());
                 $(".light_length_value").val($(".control_light_length").val());
